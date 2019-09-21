@@ -8,6 +8,14 @@
 
 //Date interval 
 function create_date_interval(dateFrom, dateTo) {
+    function setDateFrom(newDateFrom) {
+        dateFrom = newDateFrom
+    }
+  
+    function setDateTo(newDateTo) {
+        dateTo = newDateTo
+    }
+
     function getDateFrom() {
         return dateFrom
     }
@@ -21,6 +29,8 @@ function create_date_interval(dateFrom, dateTo) {
     }
     
     return {
+        setDateFrom,
+        setDateTo,
         getDateFrom,
         getDateTo,
         contains
@@ -66,7 +76,7 @@ function event_and_type_to_weather_data(event, type, value) {
         return value
     }
     return Object.assign({}, event, type, {
-        value
+        getValue
     })
 }
 
@@ -80,19 +90,188 @@ function create_weather_data(time, place, type, unit, value) {
 //Temperature function
 function create_temperature(weather_data) {
     function convertToF() {
-        if (weather_data.unit() === '*C') {
-            return (weather_data.value() * 9 / 5) + 32
+        if (weather_data.getUnit() === '*C') {
+            return (weather_data.getValue() * 9 / 5) + 32
         } else {
-            return "Invalid unit type for conversion"
+            return "Invalid unit type for conversion " + weather_data.getUnit()
         }
     }
 
     function convertToC() {
-        if (weather_data.unit() === '*F') {
-            return (weather_data.value() - 32) * (5 / 9)
+        if (weather_data.getUnit() === '*F') {
+            return (weather_data.getValue() - 32) * (5 / 9)
         } else {
-            return "Invalid unit type for conversion"
+            return "Invalid unit type for conversion " + weather_data.getUnit()
         }
     }
     return {convertToF, convertToC}
 }
+
+//Precipitation function
+function create_precipitation(weather_data, precipitation_type) {
+    function getPrecipitationType() {
+        return precipitation_type
+    }
+  
+    function convertToInches() {
+        if (weather_data.getUnit() === 'MM') {
+            return (weather_data.getValue() / 25.4)
+        } else {
+            return "Invalid unit type for conversion: " + weather_data.getUnit()
+        }
+    }
+  
+    function convertToMM() {
+        if (weather_data.getUnit() === 'inches') {
+            return (weather_data.getValue() * 25.4)
+        } else {
+            return "Invalid unit type for conversion: " + weather_data.getUnit()
+        }
+    }
+    return {
+        getPrecipitationType,
+        convertToInches,
+        convertToMM
+    }
+  }
+  
+  //Wind function
+  function create_wind(weather_data, direction) {
+    function getDirection() {
+        return direction
+    }
+  
+    function convertToMPH() {
+        if (weather_data.getUnit() === 'MS') {
+            return (weather_data.getValue() * 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_data.getUnit()
+        }
+    }
+  
+    function convertToMS() {
+        if (weather_data.getUnit() === 'MPH') {
+            return (weather_data.getValue() / 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_data.getUnit()
+        }
+    }
+    return {
+        getDirection,
+        convertToMPH,
+        convertToMS
+    }
+  }
+  
+  //Cloud coverage function
+  function create_cloud_coverage(weather_data) {
+    noop
+  }
+  
+  //Concatenation of event and data to weather prediction
+  function event_and_type_to_weather_prediction(event, type, to, from) {
+    //TODO: maybe refactor this, not sure how it is supposed to work
+    function matches(weather_data) {
+        if (this === weather_data)
+            return true
+        else
+            return false
+    }
+  
+    function getTo() {
+        return to
+    }
+  
+    function getFrom() {
+        return from
+    }
+    return Object.assign({}, event, type, {
+        matches,
+        getTo,
+        getFrom
+    })
+  }
+  
+  //Weather prediction function
+  function create_weather_prediction(time, place, type, unit, to, from) {
+    const event = create_event(time, place)
+    const data_type = create_data_type(type, unit)
+    return event_and_type_to_weather_prediction(event, data_type, to, from)
+  }
+  
+  //Temperature prediction function
+  function create_temperature_prediction(weather_prediction) {
+    function convertToF() {
+        if (weather_prediction.getUnit() === '*C') {
+            return (weather_prediction.getValue() * 9 / 5) + 32
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+  
+    function convertToC() {
+        if (weather_prediction.getUnit() === '*F') {
+            return (weather_prediction.getValue() - 32) * (5 / 9)
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+    return {
+        convertToF,
+        convertToC
+    }
+  }
+  
+  //Precipitation prediction function
+  function create_precipitation_prediction(weather_prediction, types, weather_data) {
+    function getTypes() {
+        return types
+    }
+  //TODO: figure out how matches is supposed to work
+    function matches(weather_data) {
+        noop
+    }
+    function convertToInches() {
+        if (weather_prediction.getUnit() === 'MM') {
+            return (weather_prediction.getValue() / 25.4)
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+  
+    function convertToMM() {
+        if (weather_prediction.getUnit() === 'inches') {
+            return (weather_prediction.getValue() * 25.4)
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+  }
+
+  //Wind prediction function
+  function create_wind_prediction(directions, weather_data, weather_prediction){
+      function getDirections() { return directions }
+      function matches() { noop }
+      function convertToMPH() {
+        if (weather_prediction.getUnit() === 'MS') {
+            return (weather_prediction.getValue() * 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+  
+    function convertToMS() {
+        if (weather_prediction.getUnit() === 'MPH') {
+            return (weather_prediction.getValue() / 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
+        }
+    }
+
+    return { getDirections, matches, convertToMPH, convertToMS }
+  }
+
+  //Cloud coverage prediction function
+  function create_cloud_coverage_prediction(weather_prediction){
+      noop
+  }
