@@ -17,11 +17,9 @@ function create_date_interval(dateFrom, dateTo) {
     }
 
     function contains(date) {
-        if (date > dateFrom && date < dateTo)
-            return true
-        else
-            return false
+        return (date > dateFrom && date < dateTo)
     }
+    
     return {
         getDateFrom,
         getDateTo,
