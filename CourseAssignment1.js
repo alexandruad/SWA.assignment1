@@ -283,7 +283,7 @@ function create_precipitation_prediction(weather_prediction, types) {
     function getTypes() {
         return types
     }
-    
+
     function matches(weather_data) {
         weather_prediction.matches(weather_data)
     }
