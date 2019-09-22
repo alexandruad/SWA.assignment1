@@ -104,6 +104,10 @@ function create_weather_data(time, place, type, unit, value) {
 
 //Temperature function
 function create_temperature(weather_data) {
+    function getWeatherData() {
+        return weather_data
+    }
+
     function convertToF() {
         if (weather_data.getUnit() === '*C') {
             return (weather_data.getValue() * 9 / 5) + 32
@@ -120,6 +124,7 @@ function create_temperature(weather_data) {
         }
     }
     return {
+        getWeatherData,
         convertToF,
         convertToC
     }
@@ -127,6 +132,10 @@ function create_temperature(weather_data) {
 
 //Precipitation function
 function create_precipitation(weather_data, precipitation_type) {
+    function getWeatherData() {
+        return weather_data
+    }
+
     function getPrecipitationType() {
         return precipitation_type
     }
@@ -147,6 +156,7 @@ function create_precipitation(weather_data, precipitation_type) {
         }
     }
     return {
+        getWeatherData,
         getPrecipitationType,
         convertToInches,
         convertToMM
@@ -155,6 +165,10 @@ function create_precipitation(weather_data, precipitation_type) {
 
 //Wind function
 function create_wind(weather_data, direction) {
+    function getWeatherData() {
+        return weather_data
+    }
+
     function getDirection() {
         return direction
     }
@@ -175,6 +189,7 @@ function create_wind(weather_data, direction) {
         }
     }
     return {
+        getWeatherData,
         getDirection,
         convertToMPH,
         convertToMS
@@ -183,7 +198,12 @@ function create_wind(weather_data, direction) {
 
 //Cloud coverage function
 function create_cloud_coverage(weather_data) {
-    noop
+    function getWeatherData() {
+        return weather_data
+    }
+    return {
+        getWeatherData
+    }
 }
 
 //Concatenation of event and data to weather prediction
@@ -219,6 +239,10 @@ function create_weather_prediction(time, place, type, unit, to, from) {
 
 //Temperature prediction function
 function create_temperature_prediction(weather_prediction) {
+    function getWeatherPrediction() {
+        return weather_prediction
+    }
+
     function convertToF() {
         if (weather_prediction.getUnit() === '*C') {
             return (weather_prediction.getValue() * 9 / 5) + 32
@@ -235,19 +259,24 @@ function create_temperature_prediction(weather_prediction) {
         }
     }
     return {
+        getWeatherPrediction,
         convertToF,
         convertToC
     }
 }
 
 //Precipitation prediction function
-function create_precipitation_prediction(weather_prediction, types, weather_data) {
+function create_precipitation_prediction(weather_prediction, types) {
+    function getWeatherPrediction() {
+        return weather_prediction
+    }
+
     function getTypes() {
         return types
     }
-    //TODO: figure out how matches is supposed to work
+
     function matches(weather_data) {
-        noop
+        weather_prediction.matches(weather_data)
     }
 
     function convertToInches() {
@@ -266,6 +295,7 @@ function create_precipitation_prediction(weather_prediction, types, weather_data
         }
     }
     return {
+        getWeatherPrediction,
         getTypes,
         matches,
         convertToInches,
@@ -274,13 +304,17 @@ function create_precipitation_prediction(weather_prediction, types, weather_data
 }
 
 //Wind prediction function
-function create_wind_prediction(directions, weather_data, weather_prediction) {
+function create_wind_prediction(directions, weather_prediction) {
+    function getWeatherPrediction() {
+        return weather_prediction
+    }
+
     function getDirections() {
         return directions
     }
 
-    function matches() {
-        noop
+    function matches(weather_data) {
+        weather_prediction.matches(weather_data)
     }
 
     function convertToMPH() {
@@ -300,6 +334,7 @@ function create_wind_prediction(directions, weather_data, weather_prediction) {
     }
 
     return {
+        getWeatherPrediction,
         getDirections,
         matches,
         convertToMPH,
@@ -309,16 +344,22 @@ function create_wind_prediction(directions, weather_data, weather_prediction) {
 
 //Cloud coverage prediction function
 function create_cloud_coverage_prediction(weather_prediction) {
-    noop
+    function getWeatherPrediction() {
+        return weather_prediction
+    }
+    return {
+        getWeatherPrediction
+    }
 }
 
 //Weather history function
 function create_weather_history(weather_data_array) {
 
-    const weather_report;
+    let weather_report = null;
 
     function getWeatherReport() {
-       weather_report = weather_data_array.pop()
+        weather_report = weather_data_array.pop()
+        return weather_report;
     }
 
     function getCurrentPlace() {
@@ -408,10 +449,11 @@ function create_weather_history(weather_data_array) {
 
 //Weather forecast function
 function create_weather_forecast(weather_prediction_array) {
-    const weather_report;
+    const weather_report = null;
 
     function getWeatherReport() {
         weather_report = weather_prediction_array.pop()
+        return weather_report
     }
 
     function getCurrentPlace() {
@@ -498,3 +540,29 @@ function create_weather_forecast(weather_prediction_array) {
         getData
     }
 }
+
+//this would be November 22 1997
+const interval1 = create_date_interval(new Date(1997, 10, 22), new Date(2010, 5, 13))
+const weatherData = create_weather_data(interval1, 'Horsens', 'Celsius', '*C', 14)
+const temp = create_temperature(weatherData)
+const tempInF = temp.convertToF();
+console.log(interval1.getDateFrom())
+console.log(weatherData.getUnit())
+console.log(temp.getWeatherData().getValue())
+console.log(tempInF)
+const weatherData1 = create_weather_data(interval1, 'Vejle', 'Milimiters', 'MM', 2000)
+const precip = create_precipitation(weatherData1)
+const precipInInches = precip.convertToInches()
+console.log(precip.getWeatherData().getValue())
+console.log(precipInInches)
+const reports = [weatherData, weatherData1]
+const weatherReport = create_weather_history(reports)
+const report = weatherReport.getWeatherReport()
+const currPlace = weatherReport.getCurrentPlace()
+const currPeriod = weatherReport.getCurrentPeriod()
+const currType = weatherReport.getCurrentType()
+console.log(currPlace)
+console.log(currPeriod.getDateFrom())
+console.log(currType) 
+const usUnit = weatherReport.convertToUSUnits()
+console.log(usUnit)
