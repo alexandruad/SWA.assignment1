@@ -250,8 +250,11 @@ class WeatherPrediction extends WeatherEvent {
     this.from = from
     this.to = to
   }
-  getValue() { return this.value }
-  setValue(newValue) { this.value = newValue }
+  getTo() { return this.to }
+  setTo(newTo) { this.to = newTo }
+
+  getFrom() { return this.from }
+  setFrom(newFrom) { this.from = newFrom }
 
   getDataType() { return this.dataType }
   setDataType(newDataType) { this.dataType = newDataType }
@@ -295,13 +298,19 @@ class TemperaturePrediction extends WeatherPrediction {
 
   convertToF() {
       if (super.getDataType().getUnit() === '*C') {
-          return (super.getValue() * 9 / 5) + 32
+        super.setFrom((super.getFrom() * 9 / 5) + 32)
+        super.setTo((super.getTo() * 9 / 5) + 32)
+        super.setUnit('*F')
+        super.setType('Fahrenheit')
       }
   }
 
   convertToC() {
     if (super.getDataType().getUnit() === '*F') {
-      return (super.getValue() - 32) * (5 / 9)
+      super.setFrom((super.getFrom() - 32) * (5 / 9))
+      super.setTo((super.getTo() - 32) * (5 / 9))
+      super.setUnit('*C')
+      super.setType('Celsius')
     }
   }
 }
@@ -328,12 +337,18 @@ matches(data) {
 
   convertToInches() {
     if (super.getDataType().getUnit() === 'MM') {
-      return (super.getValue() / 25.4)
+      super.setFrom(super.getFrom() / 25.4)
+      super.setTo(super.getTo() / 25.4)
+      super.setUnit('IN')
+      super.setType('Inches')
     }
   }
   convertToMM() {
     if (super.getDataType().getUnit() === 'inches') {
-      return (super.getValue() * 25.4)
+      super.setFrom(super.getFrom() * 25.4)
+      super.setTo(super.getTo() * 25.4)
+      super.setUnit('MM')
+      super.setType('Milimeters')
     }
   }
 }
@@ -355,12 +370,18 @@ class WindPrediction extends WeatherPrediction {
   }
   convertToMPH() {
     if (super.getDataType().getUnit() === 'MPS') {
-      return (super.getValue() * 2.237)
+      super.setFrom(super.getFrom() * 2.237)
+      super.setTo(super.getTo() * 2.237)
+      super.setUnit('MPH')
+      super.setType('Miles per hour')
     }
   }
   convertToMPS() {
     if (super.getDataType().getUnit() === 'MPH') {
-      return (super.getValue() / 2.237)
+      super.setFrom(super.getFrom() / 2.237)
+      super.setTo(super.getTo() / 2.237)
+      super.setUnit('MPS')
+      super.setType('Meters per second')
     }
   }
 }
@@ -404,38 +425,44 @@ class WeatherForecast {
   clearCurrentPeriod(){ this.currentDataFilter.period = undefined }
 
   convertToUSUnits() {
-      for (let weather_data of this.weatherPredictionList) {
-
-        if (weather_data.getDataType().getUnit() === '*C') {
-          weather_data.setValue((weather_data.getValue() * 9 / 5) + 32)
-          weather_data.setDataType(new DataType('Fahrenheit', '*F'))
-
-        } else if (weather_data.getDataType().getUnit() === 'MM') {
-          weather_data.setValue(weather_data.getValue() / 25.4)
-          weather_data.setDataType(new DataType('Inches', 'IN'))
-
-        } else if (weather_data.getDataType().getUnit() === 'MPS') {
-          weather_data.setValue(weather_data.getValue() * 2.237)
-          weather_data.setDataType(new DataType('Miles per hour', 'MPH'))
-        }
+    for (let weather_prediction of this.weatherPredictionList) {
+      if (weather_prediction.getUnit() === '*C') {
+          weather_prediction.setFrom((weather_prediction.getFrom() * 9 / 5) + 32)
+          weather_prediction.setTo((weather_prediction.getTo() * 9 / 5) + 32)
+          weather_prediction.setUnit('*F')
+          weather_prediction.setType('Fahrenheit')
+      } else if (weather_prediction.getUnit() === 'MM') {
+          weather_prediction.setFrom(weather_prediction.getFrom() / 25.4)
+          weather_prediction.setTo(weather_prediction.getTo() / 25.4)
+          weather_prediction.setUnit('IN')
+          weather_prediction.setType('Inches')
+      } else if (weather_prediction.getUnit() === 'MPS') {
+          weather_prediction.setFrom(weather_prediction.getFrom() * 2.237)
+          weather_prediction.setTo(weather_prediction.setTo() * 2.237)
+          weather_prediction.setUnit('MPH')
+          weather_prediction.setType('Miles per hour')
       }
   }
+  }
   convertToInternationalUnits(){
-    for (let weather_data of this.weatherPredictionList) {
-
-      if (weather_data.getDataType().getUnit() === '*F') {
-        weather_data.setValue((weather_data.getValue() - 32) * (5/9))
-        weather_data.setDataType(new DataType('Celsius', '*C'))
-
-      } else if (weather_data.getDataType().getUnit() === 'IN') {
-        weather_data.setValue(weather_data.getValue() * 25.4)
-        weather_data.setDataType(new DataType('Milimeters', 'MM'))
-
-      } else if (weather_data.getDataType().getUnit() === 'MPH') {
-        weather_data.setValue(weather_data.getValue() / 2.237)
-        weather_data.setDataType(new DataType('Miles per second', 'MPS'))
+    for (let weather_prediction of this.weatherPredictionList) {
+      if (weather_prediction.getUnit() === '*F') {
+          weather_prediction.setFrom((weather_prediction.getFrom() - 32) * (5 / 9))
+          weather_prediction.setTo((weather_prediction.getTo() - 32) * (5 / 9))
+          weather_prediction.setUnit('*C')
+          weather_prediction.setType('Celsius')
+      } else if (weather_prediction.getUnit() === 'Inches') {
+          weather_prediction.setFrom(weather_prediction.getFrom() * 25.4)
+          weather_prediction.setTo(weather_prediction.getTo() * 25.4)
+          weather_prediction.setUnit('IN')
+          weather_prediction.setType('Inches')
+      } else if (weather_prediction.getUnit() === 'MPH') {
+          weather_prediction.setFrom(weather_prediction.getFrom() / 2.237)
+          weather_prediction.setTo(weather_prediction.setTo() / 2.237)
+          weather_prediction.setUnit('MPS')
+          weather_prediction.setType('Meters per second')
       }
-    }
+  }
   }
 
 
