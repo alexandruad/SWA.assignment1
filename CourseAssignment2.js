@@ -5,6 +5,7 @@
 
 //helper function
 const noop = () => {};
+noop
 
 //Class definition
 class DateInterval {
@@ -18,10 +19,10 @@ class DateInterval {
   getDateTo() { return this.dateTo }
   setDateTo(newDateTo) { this.dateTo = newDateTo}
 
-  contains(date) { return (date >= this.dateFrom && date <= this.dateTo) }
+  contains(dateInterval) { 
+    return (dateInterval.getDateFrom() >= this.dateFrom && dateInterval.getDateTo() <= this.dateTo) 
+  }
 }
-const dateInt = new DateInterval(07, 09)
-console.log(dateInt.contains(08))
 
 class WeatherEvent {
   constructor(time, place) {
@@ -49,51 +50,66 @@ class DataType {
 }
 
 class WeatherData extends WeatherEvent {
-  constructor(time, place, value, type, unit) {
+  constructor(fromDate, toDate, time, place, value, type, unit) {
     super(time, place)
     this.value = value
     this.dataType = new DataType(type, unit)
+    this.dateInterval = new DateInterval(fromDate, toDate)
   }
   getValue() { return this.value }
   setValue(newValue) { this.value = newValue }
 
   getDataType() { return this.dataType }
   setDataType(newDataType) { this.dataType = newDataType }
-}
 
-const x = new WeatherData(08, "Horsens", 10, 'Degrees', 'Celsius')
-console.log(x.getDataType().getUnit())
+  getTime(){ return super.getTime() }
+  setTime(newTime){ super.setTime(newTime) }
+
+  getPlace(){ return super.getPlace() }
+  setPlace(newPlace){ super.setPlace(newPlace) }
+
+  getDateInterval() { return this.dateInterval } 
+  setDateInterval( newFrom, newTo) { this.dateInterval = new DateInterval(newFrom, newTo) }
+}
 
 class Temperature extends WeatherData {
   constructor(time, place, value, type, unit) {
     super(time, place, value, type, unit)
     }
+
   convertToF() {
-    noop
+      if (super.getDataType().getUnit() === '*C') {
+          return (super.getValue() * 9 / 5) + 32
+      }
   }
+
   convertToC() {
-    noop
+    if (super.getDataType().getUnit() === '*F') {
+      return (super.getValue() - 32) * (5 / 9)
+    }
   }
 }
-const y = new Temperature(08, "Horsens", 10, 'Degrees', 'Celsius')
-console.log(y.getDataType().getUnit())
 
 class Precipitation extends WeatherData {
-  constructor(time, place, value, type, unit) {
+  constructor(time, place, value, type, unit, precipitationType) {
     super(time, place, value, type, unit)
+    this.precipitationType = precipitationType
     }
   precipitationType() {
-    noop
+    return this.precipitationType
   }
   convertToInches() {
-    noop
+    if (super.getDataType().getUnit() === 'MM') {
+      return (super.getValue() / 25.4)
+    }
   }
   convertToMM() {
-    noop
+    if (super.getDataType().getUnit() === 'inches') {
+      return (super.getValue() * 25.4)
+    }
   }
 }
-const z = new Precipitation(08, "Horsens", 10, 'Degrees', 'Celsius')
-console.log(z.getDataType().getUnit())
+
 
 class Wind extends WeatherData {
   constructor(time, place, value, type, unit, direction) {
@@ -104,20 +120,90 @@ class Wind extends WeatherData {
     return this.direction
   }
   convertToMPH() {
-    noop
+    if (super.getDataType().getUnit() === 'MS') {
+      return (super.getValue() * 2.237)
+    }
   }
   convertToMPS() {
-    noop
+    if (super.getDataType().getUnit() === 'MPH') {
+      return (super.getValue() / 2.237)
+    }
   }
 }
-const a = new Wind(08, "Horsens", 10, 'Degrees', 'Celsius', 'N-W')
-console.log(a.getDataType().getUnit())
-console.log(a.getDirection())
 
 class CloudCoverage extends WeatherData {
-  constructor(time, place, value, type, unit) {
+  constructor(time, place, value, type, unit, cloudCoverage) {
     super(time, place, value, type, unit)
+    this.cloudCoverage = cloudCoverage
+    }
+    getCloudCoverage(){
+      return this.cloudCoverage
     }
 }
-const b = new CloudCoverage(08, "Horsens", 10, 'Degrees', 'Celsius')
-console.log(b.getDataType().getUnit())
+
+class WeatherHistory {
+  constructor(data) {
+    this.currentDataFilter = {}
+    this.weatherDataList = data
+  }
+
+  getCurrentData() { return this.currentData }
+
+  getCurrentPlace() { return this.currentDataFilter.place }
+  setCurrentPlace(newPlace) { this.currentDataFilter.place = newPlace }
+  clearCurrentPlace() { this.currentDataFilter.place = undefined }
+
+  getCurrentType(){ return this.currentDataFilter.type }
+  setCurrentType(newType){ this.currentDataFilter.type = newType }
+  clearCurrentType(){ this.currentDataFilter.type = undefined }
+
+  getCurrentPeriod(){ return this.currentDataFilter.period }
+  setCurrentPeriod(newFrom, newTo){ this.currentDataFilter.period = new DateInterval(newFrom, newTo) }
+  clearCurrentPeriod(){ this.currentDataFilter.period = undefined }
+
+  convertToUSUnits(){}
+  convertToInternationalUnits(){}
+
+
+  addWeatherData(newData) {
+    this.weatherDataList.push(newData)
+    this.currentData = newData
+  }
+  data() {
+    var filteredWeatherDataList = this.weatherDataList
+    if(this.currentDataFilter.place) { 
+      filteredWeatherDataList = filteredWeatherDataList.filter( el => {
+        return (el.getPlace() === this.currentDataFilter.place)
+      })
+     }
+     if(this.currentDataFilter.type) { 
+      filteredWeatherDataList = filteredWeatherDataList.filter( el => {
+        return (el.getType() === this.currentDataFilter.type)
+      })
+     }
+     if(this.currentDataFilter.period) { 
+      filteredWeatherDataList = filteredWeatherDataList.filter( el => {
+        return (el.getDateInterval().contains(this.currentDataFilter.period))
+      })
+     }
+     return filteredWeatherDataList
+   }
+}
+
+var x = new WeatherData( 1, 2, 8, "Alabama", 10, 'Degrees', 'Celsius')
+var b = new CloudCoverage( 1, 2, 8, "Alabama", 10, 'Degrees', 'Celsius', 'Very cloudy!')
+var z = new Precipitation( 5, 6, 8, "Horsens", 10, 'Degrees', 'Celsius', 'liquid')
+var a = new Wind( 1, 2, 8, "Horsens", 10, 'Degrees', 'MS', 'N-W')
+const y = new Temperature( 5, 10, 8, "Horsens", 10, 'Degrees', '*C')
+
+
+var weatherDateList = new WeatherHistory([x, b, z, a, y])
+
+console.log(weatherDateList.data())
+weatherDateList.setCurrentPlace('Horsens')
+console.log(weatherDateList.data())
+weatherDateList.clearCurrentPlace()
+
+weatherDateList.setCurrentPeriod( 1, 10)
+weatherDateList.setCurrentPlace('Horsens')
+console.log(weatherDateList.data())
