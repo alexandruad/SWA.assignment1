@@ -209,12 +209,15 @@ function create_cloud_coverage(weather_data) {
 //Concatenation of event and data to weather prediction
 function event_and_type_to_weather_prediction(event, type, to, from) {
     function matches(weather_data) {
-        if (type === weather_data.getType())
+        if (type === weather_data.getType()) {
             if (weather_data.getValue() > from && weather_data.getValue() < to) {
                 return true
+            } else {
+                return false
             }
-        else
+        } else {
             return false
+        }
     }
 
     function setTo(newTo) {
