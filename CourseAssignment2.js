@@ -184,6 +184,7 @@ class WeatherHistory {
      if(this.currentDataFilter.period) { 
       filteredWeatherDataList = filteredWeatherDataList.filter( el => {
         return (el.getDateInterval().contains(this.currentDataFilter.period))
+        
       })
      }
      return filteredWeatherDataList

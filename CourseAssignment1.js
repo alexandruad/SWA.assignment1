@@ -26,8 +26,8 @@ function create_date_interval(dateFrom, dateTo) {
         return dateTo
     }
 
-    function contains(date) {
-        return (date > dateFrom && date < dateTo)
+    function contains(dateInterval) {
+        return (dateInterval.getDateFrom() >= dateFrom && dateInterval.getDateTo() <= dateTo)
     }
 
     return {
@@ -183,16 +183,16 @@ function create_wind(weather_data, direction) {
         weather_data.setType('Miles per hour')
     }
 
-    function convertToMS() {
+    function convertToMPS() {
         weather_data.setValue(weather_data.getValue() / 2.237)
-        weather_data.setUnit('MS')
+        weather_data.setUnit('MPS')
         weather_data.setType('Meters per second')
     }
     return {
         getWeatherData,
         getDirection,
         convertToMPH,
-        convertToMS
+        convertToMPS
     }
 }
 
@@ -283,7 +283,7 @@ function create_precipitation_prediction(weather_prediction, types) {
     function getTypes() {
         return types
     }
-    //TODO
+    
     function matches(weather_data) {
         weather_prediction.matches(weather_data)
     }
@@ -331,10 +331,10 @@ function create_wind_prediction(directions, weather_prediction) {
         weather_prediction.setType('Miles per hour')
     }
 
-    function convertToMS() {
+    function convertToMPS() {
         weather_prediction.setFrom(weather_prediction.getFrom() / 2.237)
         weather_prediction.setTo(weather_prediction.getTo() / 2.237)
-        weather_prediction.setUnit('MS')
+        weather_prediction.setUnit('MPS')
         weather_prediction.setType('Meters per second')
     }
 
@@ -343,7 +343,7 @@ function create_wind_prediction(directions, weather_prediction) {
         getDirections,
         matches,
         convertToMPH,
-        convertToMS
+        convertToMPS
     }
 }
 
@@ -360,47 +360,47 @@ function create_cloud_coverage_prediction(weather_prediction) {
 //Weather history function
 function create_weather_history(weather_data_array) {
 
-    let weather_report = null;
+    let currentDataFilter = {}
+    let weatherDataList = weather_data_array
 
-    function getWeatherReport() {
-        weather_report = weather_data_array.pop()
-        return weather_report;
+    function getDataFilter() {
+        return currentDataFilter;
     }
 
     function getCurrentPlace() {
-        return weather_report.getPlace()
+        return currentDataFilter.place
     }
 
     function setCurrentPlace(newPlace) {
-        weather_report.setPlace(newPlace)
+        currentDataFilter.place = newPlace
     }
 
     function clearCurrentPlace() {
-        weather_report.setPlace(undefined)
+        currentDataFilter.place = undefined
     }
 
     function getCurrentType() {
-        return weather_report.getType()
+        return currentDataFilter.type
     }
 
     function setCurrentType(newType) {
-        weather_report.setType(newType);
+        currentDataFilter.type = newType
     }
 
     function clearCurrentType() {
-        weather_report.setType(undefined);
+        currentDataFilter.type = undefined
     }
 
     function getCurrentPeriod() {
-        return weather_report.getTime()
+        return currentDataFilter.period
     }
 
-    function setCurrentPeriod(date_interval) {
-        weather_report.setTime(date_interval)
+    function setCurrentPeriod(newFrom, newTo) {
+        currentDataFilter.period = new DateInterval(newFrom, newTo)
     }
 
     function clearCurrentPeriod() {
-        weather_report.setTime(undefined)
+        currentDataFilter.period = undefined
     }
 
     function convertToUSUnits() {
@@ -413,7 +413,7 @@ function create_weather_history(weather_data_array) {
                 weather_data.setValue(weather_data.getValue() / 25.4)
                 weather_data.setUnit('IN')
                 weather_data.setType('Inches')
-            } else if (weather_data.getUnit() === 'MS') {
+            } else if (weather_data.getUnit() === 'MPS') {
                 weather_data.setValue(weather_data.getValue() * 2.237)
                 weather_data.setUnit('MPH')
                 weather_data.setType('Miles per hour')
@@ -433,21 +433,38 @@ function create_weather_history(weather_data_array) {
                 weather_data.setType('Milimeters')
             } else if (weather_data.getUnit() === 'MPH') {
                 weather_data.setValue(weather_data.getValue() / 2.237)
-                weather_data.setUnit('MS')
+                weather_data.setUnit('MPS')
                 weather_data.setType('Meters per second')
             }
         }
     }
 
     function addToWeatherData(weather_data_array) {
-        weather_data_array.push(weather_report)
+        weatherDataList.push(weather_data_array)
+        currentDataFilter = weather_data_array
     }
 
     function getData() {
-        return weather_data_array
+        var filteredWeatherDataList = weatherDataList
+        if (currentDataFilter.place) {
+            filteredWeatherDataList = filteredWeatherDataList.filter(el => {
+                return (el.getPlace() === currentDataFilter.place)
+            })
+        }
+        if (currentDataFilter.type) {
+            filteredWeatherDataList = filteredWeatherDataList.filter(el => {
+                return (el.getType() === currentDataFilter.type)
+            })
+        }
+        if (currentDataFilter.period) {
+            filteredWeatherDataList = filteredWeatherDataList.filter(el => {
+                return (el.getDateInterval().contains(currentDataFilter.period))
+            })
+        }
+        return filteredWeatherDataList
     }
     return {
-        getWeatherReport,
+        getDataFilter,
         getCurrentPlace,
         setCurrentPlace,
         clearCurrentPlace,
@@ -466,47 +483,48 @@ function create_weather_history(weather_data_array) {
 
 //Weather forecast function
 function create_weather_forecast(weather_prediction_array) {
-    const weather_report = null;
 
-    function getWeatherReport() {
-        weather_report = weather_prediction_array.pop()
-        return weather_report
+    let currentPredictionFilter = {}
+    let weatherPredictionList = weather_data_array
+
+    function getPredictionFilter() {
+        return currentPredictionFilter
     }
 
     function getCurrentPlace() {
-        return weather_report.getPlace()
+        return currentPredictionFilter.place
     }
 
     function setCurrentPlace(newPlace) {
-        weather_report.setPlace(newPlace)
+        currentPredictionFilter.place = newPlace
     }
 
     function clearCurrentPlace() {
-        weather_report.setPlace(undefined)
+        currentPredictionFilter.place = undefined
     }
 
     function getCurrentType() {
-        return weather_report.getType()
+        return currentPredictionFilter.type
     }
 
     function setCurrentType(newType) {
-        weather_report.setType(newType);
+        currentPredictionFilter.type = newType
     }
 
     function clearCurrentType() {
-        weather_report.setType(undefined);
+        currentPredictionFilter.type = undefined
     }
 
     function getCurrentPeriod() {
-        return weather_report.getTime()
+        return currentPredictionFilter.period
     }
 
-    function setCurrentPeriod(date_interval) {
-        weather_report.setTime(date_interval)
+    function setCurrentPeriod(newFrom, newTo) {
+        currentPredictionFilter.period = new DateInterval(newFrom, newTo)
     }
 
     function clearCurrentPeriod() {
-        weather_report.setTime(undefined)
+        currentPredictionFilter.period = undefined
     }
 
     function convertToUSUnits() {
@@ -521,7 +539,7 @@ function create_weather_forecast(weather_prediction_array) {
                 weather_prediction.setTo(weather_prediction.getTo() / 25.4)
                 weather_prediction.setUnit('IN')
                 weather_prediction.setType('Inches')
-            } else if (weather_prediction.getUnit() === 'MS') {
+            } else if (weather_prediction.getUnit() === 'MPS') {
                 weather_prediction.setFrom(weather_prediction.getFrom() * 2.237)
                 weather_prediction.setTo(weather_prediction.setTo() * 2.237)
                 weather_prediction.setUnit('MPH')
@@ -545,21 +563,38 @@ function create_weather_forecast(weather_prediction_array) {
             } else if (weather_prediction.getUnit() === 'MPH') {
                 weather_prediction.setFrom(weather_prediction.getFrom() / 2.237)
                 weather_prediction.setTo(weather_prediction.setTo() / 2.237)
-                weather_prediction.setUnit('MS')
+                weather_prediction.setUnit('MPS')
                 weather_prediction.setType('Meters per second')
             }
         }
     }
 
     function addToWeatherData(weather_prediction_array) {
-        weather_prediction_array.push(weather_report)
+        weatherPredictionList.push(weather_prediction_array)
+        currentPredictionFilter = weather_prediction_array
     }
 
     function getData() {
-        return weather_data_array
+        var filteredWeatherPredictionList = weatherPredictionList
+        if (currentPredictionFilter.place) {
+            filteredWeatherPredictionList = filteredWeatherPredictionList.filter(el => {
+                return (el.getPlace() === currentPredictionFilter.place)
+            })
+        }
+        if (currentPredictionFilter.type) {
+            filteredWeatherPredictionList = filteredWeatherPredictionList.filter(el => {
+                return (el.getType() === currentPredictionFilter.type)
+            })
+        }
+        if (currentPredictionFilter.period) {
+            filteredWeatherPredictionList = filteredWeatherPredictionList.filter(el => {
+                return (el.getDateInterval().contains(currentPredictionFilter.period))
+            })
+        }
+        return filteredWeatherPredictionList
     }
     return {
-        getWeatherReport,
+        getPredictionFilter,
         getCurrentPlace,
         setCurrentPlace,
         clearCurrentPlace,
