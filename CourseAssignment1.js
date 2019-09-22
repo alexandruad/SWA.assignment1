@@ -47,6 +47,7 @@ function create_event(time, place) {
     function setTime(newTime) {
         time = newTime
     }
+
     function getTime() {
         return time
     }
@@ -264,6 +265,12 @@ function create_precipitation_prediction(weather_prediction, types, weather_data
             return "Invalid unit type for conversion: " + weather_prediction.getUnit()
         }
     }
+    return {
+        getTypes,
+        matches,
+        convertToInches,
+        convertToMM
+    }
 }
 
 //Wind prediction function
@@ -310,49 +317,167 @@ function create_weather_history(weather_data_array) {
 
     const weather_report;
 
-    function getWeatherReport(index) {
-        for(let report of weather_data_array){
-            
-        }
+    function getWeatherReport() {
+       weather_report = weather_data_array.pop()
     }
+
     function getCurrentPlace() {
         return weather_report.getPlace()
     }
+
     function setCurrentPlace(newPlace) {
         weather_report.setPlace(newPlace)
     }
+
     function clearCurrentPlace() {
         weather_report.setPlace(undefined)
     }
+
     function getCurrentType() {
         return weather_report.getType()
     }
+
     function setCurrentType(newType) {
         weather_report.setType(newType);
     }
+
     function clearCurrentType() {
         weather_report.setType(undefined);
     }
+
     function getCurrentPeriod() {
         return weather_report.getTime()
     }
+
     function setCurrentPeriod(date_interval) {
         weather_report.setTime(date_interval)
     }
+
     function clearCurrentPeriod() {
         weather_report.setTime(undefined)
     }
-    //TODO
+
     function convertToUSUnits() {
-        noop
+        if (weather_report.getUnit() === '*C') {
+            return (weather_report.getValue() * 9 / 5) + 32
+        } else if (weather_report.getUnit() === 'MM') {
+            return (weather_report.getValue() / 25.4)
+        } else if (weather_report.getUnit() === 'MS') {
+            return (weather_report.getValue() * 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        }
     }
-    //TODO
+
     function convertToInternationalUnits() {
-        noop
+        if (weather_report.getUnit() === '*F') {
+            return (weather_report.getValue() - 32) * (5 / 9)
+        } else if (weather_report.getUnit() === 'inches') {
+            return (weather_report.getValue() * 25.4)
+        } else if (weather_report.getUnit() === 'MPH') {
+            return (weather_report.getValue() / 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        }
     }
+
     function addToWeatherData(weather_data_array) {
         weather_data_array.push(weather_report)
     }
+
+    function getData() {
+        return weather_data_array
+    }
+    return {
+        getWeatherReport,
+        getCurrentPlace,
+        setCurrentPlace,
+        clearCurrentPlace,
+        getCurrentType,
+        setCurrentType,
+        clearCurrentType,
+        getCurrentPeriod,
+        setCurrentPeriod,
+        clearCurrentPeriod,
+        convertToUSUnits,
+        convertToInternationalUnits,
+        addToWeatherData,
+        getData
+    }
+}
+
+//Weather forecast function
+function create_weather_forecast(weather_prediction_array) {
+    const weather_report;
+
+    function getWeatherReport() {
+        weather_report = weather_prediction_array.pop()
+    }
+
+    function getCurrentPlace() {
+        return weather_report.getPlace()
+    }
+
+    function setCurrentPlace(newPlace) {
+        weather_report.setPlace(newPlace)
+    }
+
+    function clearCurrentPlace() {
+        weather_report.setPlace(undefined)
+    }
+
+    function getCurrentType() {
+        return weather_report.getType()
+    }
+
+    function setCurrentType(newType) {
+        weather_report.setType(newType);
+    }
+
+    function clearCurrentType() {
+        weather_report.setType(undefined);
+    }
+
+    function getCurrentPeriod() {
+        return weather_report.getTime()
+    }
+
+    function setCurrentPeriod(date_interval) {
+        weather_report.setTime(date_interval)
+    }
+
+    function clearCurrentPeriod() {
+        weather_report.setTime(undefined)
+    }
+
+    function convertToUSUnits() {
+        if (weather_report.getUnit() === '*C') {
+            return (weather_report.getValue() * 9 / 5) + 32
+        } else if (weather_report.getUnit() === 'MM') {
+            return (weather_report.getValue() / 25.4)
+        } else if (weather_report.getUnit() === 'MS') {
+            return (weather_report.getValue() * 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        }
+    }
+
+    function convertToInternationalUnits() {
+        if (weather_report.getUnit() === '*F') {
+            return (weather_report.getValue() - 32) * (5 / 9)
+        } else if (weather_report.getUnit() === 'inches') {
+            return (weather_report.getValue() * 25.4)
+        } else if (weather_report.getUnit() === 'MPH') {
+            return (weather_report.getValue() / 2.237)
+        } else {
+            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        }
+    }
+
+    function addToWeatherData(weather_prediction_array) {
+        weather_prediction_array.push(weather_report)
+    }
+
     function getData() {
         return weather_data_array
     }
