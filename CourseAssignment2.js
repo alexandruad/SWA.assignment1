@@ -5,6 +5,7 @@
 
 //helper function
 const noop = () => {};
+noop
 
 //Class definition
 class DateInterval {
@@ -20,8 +21,8 @@ class DateInterval {
 
   contains(date) { return (date >= this.dateFrom && date <= this.dateTo) }
 }
-const dateInt = new DateInterval(07, 09)
-console.log(dateInt.contains(08))
+const dateInt = new DateInterval(7, 9)
+console.log(dateInt.contains(8))
 
 class WeatherEvent {
   constructor(time, place) {
@@ -61,38 +62,56 @@ class WeatherData extends WeatherEvent {
   setDataType(newDataType) { this.dataType = newDataType }
 }
 
-const x = new WeatherData(08, "Horsens", 10, 'Degrees', 'Celsius')
-console.log(x.getDataType().getUnit())
-
 class Temperature extends WeatherData {
   constructor(time, place, value, type, unit) {
     super(time, place, value, type, unit)
     }
+
   convertToF() {
-    noop
+      if (super.getDataType().getUnit() === '*C') {
+          return (super.getValue() * 9 / 5) + 32
+      } else {
+          return "Invalid unit type for conversion " + super.getDataType().getUnit()
+      }
   }
+
   convertToC() {
-    noop
+    if (super.getDataType().getUnit() === '*F') {
+      return (super.getValue() - 32) * (5 / 9)
+    } else {
+      return "Invalid unit type for conversion " + super.getDataType().getUnit()
+    }
   }
 }
-const y = new Temperature(08, "Horsens", 10, 'Degrees', 'Celsius')
+const y = new Temperature(8, "Horsens", 10, 'Degrees', '*C')
 console.log(y.getDataType().getUnit())
+console.log(y.convertToF())
+console.log(y.convertToC())
 
 class Precipitation extends WeatherData {
-  constructor(time, place, value, type, unit) {
+  constructor(time, place, value, type, unit, precipitationType) {
     super(time, place, value, type, unit)
+    this.precipitationType = precipitationType
     }
   precipitationType() {
-    noop
+    return this.precipitationType
   }
   convertToInches() {
-    noop
+    if (super.getDataType().getUnit() === 'MM') {
+      return (super.getValue() / 25.4)
+    } else {
+      return "Invalid unit type for conversion: " + super.getDataType().getUnit()
+    }
   }
   convertToMM() {
-    noop
+    if (super.getDataType().getUnit() === 'inches') {
+      return (super.getValue() * 25.4)
+    } else {
+      return "Invalid unit type for conversion: " + super.getDataType().getUnit()
+    }
   }
 }
-const z = new Precipitation(08, "Horsens", 10, 'Degrees', 'Celsius')
+const z = new Precipitation(8, "Horsens", 10, 'Degrees', 'Celsius', 'liquid')
 console.log(z.getDataType().getUnit())
 
 class Wind extends WeatherData {
@@ -104,20 +123,61 @@ class Wind extends WeatherData {
     return this.direction
   }
   convertToMPH() {
-    noop
+    if (super.getDataType().getUnit() === 'MS') {
+      return (super.getValue() * 2.237)
+    } else {
+      return "Invalid unit type for conversion: " + super.getDataType().getUnit()
+    }
   }
   convertToMPS() {
-    noop
+    if (super.getDataType().getUnit() === 'MPH') {
+      return (super.getValue() / 2.237)
+    } else {
+      return "Invalid unit type for conversion: " + super.getDataType().getUnit()
+    }
   }
 }
-const a = new Wind(08, "Horsens", 10, 'Degrees', 'Celsius', 'N-W')
+const a = new Wind(8, "Horsens", 10, 'Degrees', 'MS', 'N-W')
 console.log(a.getDataType().getUnit())
 console.log(a.getDirection())
+console.log(a.convertToMPH())
+console.log(a.convertToMPS())
 
 class CloudCoverage extends WeatherData {
-  constructor(time, place, value, type, unit) {
+  constructor(time, place, value, type, unit, cloudCoverage) {
     super(time, place, value, type, unit)
+    this.cloudCoverage = cloudCoverage
+    }
+    getCloudCoverage(){
+      return this.cloudCoverage
     }
 }
-const b = new CloudCoverage(08, "Horsens", 10, 'Degrees', 'Celsius')
+
+
+class WeatherHistory {
+  constructor(data) {
+    this.currentData = data
+    this.weatherDataList = [data]
+  }
+
+  getCurrentData() {
+    return this.currentData
+  }
+  addWeatherData (newData) {
+    this.weatherDataList.push(newData)
+    this.currentData = newData
+  }
+}
+
+const x = new WeatherData(8, "Horsens", 10, 'Degrees', 'Celsius')
+console.log(x.getDataType().getUnit())
+
+const b = new CloudCoverage(8, "Horsens", 10, 'Degrees', 'Celsius', 'Very cloudy!')
 console.log(b.getDataType().getUnit())
+console.log(b.getCloudCoverage())
+
+var weatherDateList = new WeatherHistory(x)
+console.log(weatherDateList.getCurrentData())
+
+weatherDateList.addWeatherData(b)
+console.log(weatherDateList.getCurrentData())
