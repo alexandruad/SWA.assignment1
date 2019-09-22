@@ -71,6 +71,10 @@ function create_data_type(type, unit) {
         type = newType
     }
 
+    function setUnit(newUnit) {
+        unit = newUnit
+    }
+
     function getType() {
         return type
     }
@@ -80,6 +84,7 @@ function create_data_type(type, unit) {
     }
     return {
         setType,
+        setUnit,
         getType,
         getUnit
     }
@@ -87,10 +92,15 @@ function create_data_type(type, unit) {
 
 //Concatenation of event and type
 function event_and_type_to_weather_data(event, type, value) {
+    function setValue(newValue) {
+        value = newValue
+    }
+
     function getValue() {
         return value
     }
     return Object.assign({}, event, type, {
+        setValue,
         getValue
     })
 }
@@ -109,19 +119,15 @@ function create_temperature(weather_data) {
     }
 
     function convertToF() {
-        if (weather_data.getUnit() === '*C') {
-            return (weather_data.getValue() * 9 / 5) + 32
-        } else {
-            return "Invalid unit type for conversion " + weather_data.getUnit()
-        }
+        weather_data.setValue((weather_data.getValue() * 9 / 5) + 32)
+        weather_data.setUnit('*F')
+        weather_data.setType('Fahrenheit')
     }
 
     function convertToC() {
-        if (weather_data.getUnit() === '*F') {
-            return (weather_data.getValue() - 32) * (5 / 9)
-        } else {
-            return "Invalid unit type for conversion " + weather_data.getUnit()
-        }
+        weather_data.setValue((weather_data.getValue() - 32) * (5 / 9))
+        weather_data.setUnit('*C')
+        weather_data.setType('Celsius')
     }
     return {
         getWeatherData,
@@ -141,19 +147,15 @@ function create_precipitation(weather_data, precipitation_type) {
     }
 
     function convertToInches() {
-        if (weather_data.getUnit() === 'MM') {
-            return (weather_data.getValue() / 25.4)
-        } else {
-            return "Invalid unit type for conversion: " + weather_data.getUnit()
-        }
+        weather_data.setValue(weather_data.getValue() / 25.4)
+        weather_data.setUnit('IN')
+        weather_data.setType('Inches')
     }
 
     function convertToMM() {
-        if (weather_data.getUnit() === 'inches') {
-            return (weather_data.getValue() * 25.4)
-        } else {
-            return "Invalid unit type for conversion: " + weather_data.getUnit()
-        }
+        weather_data.setValue(weather_data.getValue() * 25.4)
+        weather_data.setUnit('MM')
+        weather_data.setType('Milimeter')
     }
     return {
         getWeatherData,
@@ -174,19 +176,15 @@ function create_wind(weather_data, direction) {
     }
 
     function convertToMPH() {
-        if (weather_data.getUnit() === 'MS') {
-            return (weather_data.getValue() * 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_data.getUnit()
-        }
+        weather_data.setValue(weather_data.getValue() * 2.237)
+        weather_data.setUnit('MPH')
+        weather_data.setType('Miles per hour')
     }
 
     function convertToMS() {
-        if (weather_data.getUnit() === 'MPH') {
-            return (weather_data.getValue() / 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_data.getUnit()
-        }
+        weather_data.setValue(weather_data.getValue() / 2.237)
+        weather_data.setUnit('MS')
+        weather_data.setType('Meters per second')
     }
     return {
         getWeatherData,
@@ -208,12 +206,21 @@ function create_cloud_coverage(weather_data) {
 
 //Concatenation of event and data to weather prediction
 function event_and_type_to_weather_prediction(event, type, to, from) {
-    //TODO: maybe refactor this, not sure how it is supposed to work
     function matches(weather_data) {
-        if (this === weather_data)
-            return true
+        if (type === weather_data.getType())
+            if (weather_data.getValue() > from && weather_data.getValue() < to) {
+                return true
+            }
         else
             return false
+    }
+
+    function setTo(newTo) {
+        to = newTo
+    }
+
+    function setFrom(newFrom) {
+        from = newFrom
     }
 
     function getTo() {
@@ -224,6 +231,8 @@ function event_and_type_to_weather_prediction(event, type, to, from) {
         return from
     }
     return Object.assign({}, event, type, {
+        setTo,
+        setFrom,
         matches,
         getTo,
         getFrom
@@ -244,19 +253,17 @@ function create_temperature_prediction(weather_prediction) {
     }
 
     function convertToF() {
-        if (weather_prediction.getUnit() === '*C') {
-            return (weather_prediction.getValue() * 9 / 5) + 32
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_prediction.setFrom((weather_prediction.getFrom() * 9 / 5) + 32)
+        weather_prediction.setTo((weather_prediction.getTo() * 9 / 5) + 32)
+        weather_prediction.setUnit('*F')
+        weather_prediction.setType('Fahrenheit')
     }
 
     function convertToC() {
-        if (weather_prediction.getUnit() === '*F') {
-            return (weather_prediction.getValue() - 32) * (5 / 9)
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_prediction.setFrom((weather_prediction.getFrom() - 32) * (5 / 9))
+        weather_prediction.setTo((weather_prediction.getTo() - 32) * (5 / 9))
+        weather_prediction.setUnit('*C')
+        weather_prediction.setType('Celsius')
     }
     return {
         getWeatherPrediction,
@@ -274,25 +281,23 @@ function create_precipitation_prediction(weather_prediction, types) {
     function getTypes() {
         return types
     }
-
+    //TODO
     function matches(weather_data) {
         weather_prediction.matches(weather_data)
     }
 
     function convertToInches() {
-        if (weather_prediction.getUnit() === 'MM') {
-            return (weather_prediction.getValue() / 25.4)
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_data.setFrom(weather_prediction.getFrom() / 25.4)
+        weather_data.setTo(weather_prediction.getTo() / 25.4)
+        weather_prediction.setUnit('IN')
+        weather_prediction.setType('Inches')
     }
 
     function convertToMM() {
-        if (weather_prediction.getUnit() === 'inches') {
-            return (weather_prediction.getValue() * 25.4)
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_data.setFrom(weather_prediction.getFrom() * 25.4)
+        weather_data.setTo(weather_prediction.getTo() * 25.4)
+        weather_prediction.setUnit('MM')
+        weather_prediction.setType('Milimeters')
     }
     return {
         getWeatherPrediction,
@@ -318,19 +323,17 @@ function create_wind_prediction(directions, weather_prediction) {
     }
 
     function convertToMPH() {
-        if (weather_prediction.getUnit() === 'MS') {
-            return (weather_prediction.getValue() * 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_prediction.setFrom(weather_prediction.getFrom() * 2.237)
+        weather_prediction.setTo(weather_prediction.getTo() * 2.237)
+        weather_prediction.setUnit('MPH')
+        weather_prediction.setType('Miles per hour')
     }
 
     function convertToMS() {
-        if (weather_prediction.getUnit() === 'MPH') {
-            return (weather_prediction.getValue() / 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_prediction.getUnit()
-        }
+        weather_prediction.setFrom(weather_prediction.getFrom() / 2.237)
+        weather_prediction.setTo(weather_prediction.getTo() / 2.237)
+        weather_prediction.setUnit('MS')
+        weather_prediction.setType('Meters per second')
     }
 
     return {
@@ -399,26 +402,38 @@ function create_weather_history(weather_data_array) {
     }
 
     function convertToUSUnits() {
-        if (weather_report.getUnit() === '*C') {
-            return (weather_report.getValue() * 9 / 5) + 32
-        } else if (weather_report.getUnit() === 'MM') {
-            return (weather_report.getValue() / 25.4)
-        } else if (weather_report.getUnit() === 'MS') {
-            return (weather_report.getValue() * 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        for (let weather_data of weather_data_array) {
+            if (weather_data.getUnit() === '*C') {
+                weather_data.setValue(weather_data.getValue() * 9 / 5) + 32
+                weather_data.setUnit('*F')
+                weather_data.setType('Fahrenheit')
+            } else if (weather_data.getUnit() === 'MM') {
+                weather_data.setValue(weather_data.getValue() / 25.4)
+                weather_data.setUnit('IN')
+                weather_data.setType('Inches')
+            } else if (weather_data.getUnit() === 'MS') {
+                weather_data.setValue(weather_data.getValue() * 2.237)
+                weather_data.setUnit('MPH')
+                weather_data.setType('Miles per hour')
+            }
         }
     }
 
     function convertToInternationalUnits() {
-        if (weather_report.getUnit() === '*F') {
-            return (weather_report.getValue() - 32) * (5 / 9)
-        } else if (weather_report.getUnit() === 'inches') {
-            return (weather_report.getValue() * 25.4)
-        } else if (weather_report.getUnit() === 'MPH') {
-            return (weather_report.getValue() / 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        for (let weather_data of weather_data_array) {
+            if (weather_data.getUnit() === '*F') {
+                weather_data.setValue(weather_data.getValue() - 32) * (5 / 9)
+                weather_data.setUnit('*C')
+                weather_data.setType('Celsius')
+            } else if (weather_data.getUnit() === 'Inches') {
+                weather_data.setValue(weather_data.getValue() * 25.4)
+                weather_data.setUnit('MM')
+                weather_data.setType('Milimeters')
+            } else if (weather_data.getUnit() === 'MPH') {
+                weather_data.setValue(weather_data.getValue() / 2.237)
+                weather_data.setUnit('MS')
+                weather_data.setType('Meters per second')
+            }
         }
     }
 
@@ -493,26 +508,44 @@ function create_weather_forecast(weather_prediction_array) {
     }
 
     function convertToUSUnits() {
-        if (weather_report.getUnit() === '*C') {
-            return (weather_report.getValue() * 9 / 5) + 32
-        } else if (weather_report.getUnit() === 'MM') {
-            return (weather_report.getValue() / 25.4)
-        } else if (weather_report.getUnit() === 'MS') {
-            return (weather_report.getValue() * 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        for (let weather_prediction of weather_prediction_array) {
+            if (weather_prediction.getUnit() === '*C') {
+                weather_prediction.setFrom((weather_prediction.getFrom() * 9 / 5) + 32)
+                weather_prediction.setTo((weather_prediction.getTo() * 9 / 5) + 32)
+                weather_prediction.setUnit('*F')
+                weather_prediction.setType('Fahrenheit')
+            } else if (weather_prediction.getUnit() === 'MM') {
+                weather_prediction.setFrom(weather_prediction.getFrom() / 25.4)
+                weather_prediction.setTo(weather_prediction.getTo() / 25.4)
+                weather_prediction.setUnit('IN')
+                weather_prediction.setType('Inches')
+            } else if (weather_prediction.getUnit() === 'MS') {
+                weather_prediction.setFrom(weather_prediction.getFrom() * 2.237)
+                weather_prediction.setTo(weather_prediction.setTo() * 2.237)
+                weather_prediction.setUnit('MPH')
+                weather_prediction.setType('Miles per hour')
+            }
         }
     }
 
     function convertToInternationalUnits() {
-        if (weather_report.getUnit() === '*F') {
-            return (weather_report.getValue() - 32) * (5 / 9)
-        } else if (weather_report.getUnit() === 'inches') {
-            return (weather_report.getValue() * 25.4)
-        } else if (weather_report.getUnit() === 'MPH') {
-            return (weather_report.getValue() / 2.237)
-        } else {
-            return "Invalid unit type for conversion: " + weather_report.getUnit()
+        for (let weather_prediction of weather_prediction_array) {
+            if (weather_prediction.getUnit() === '*F') {
+                weather_prediction.setFrom((weather_prediction.getFrom() - 32) * (5 / 9))
+                weather_prediction.setTo((weather_prediction.getTo() - 32) * (5 / 9))
+                weather_prediction.setUnit('*C')
+                weather_prediction.setType('Celsius')
+            } else if (weather_prediction.getUnit() === 'Inches') {
+                weather_prediction.setFrom(weather_prediction.getFrom() * 25.4)
+                weather_prediction.setTo(weather_prediction.getTo() * 25.4)
+                weather_prediction.setUnit('IN')
+                weather_prediction.setType('Inches')
+            } else if (weather_prediction.getUnit() === 'MPH') {
+                weather_prediction.setFrom(weather_prediction.getFrom() / 2.237)
+                weather_prediction.setTo(weather_prediction.setTo() / 2.237)
+                weather_prediction.setUnit('MS')
+                weather_prediction.setType('Meters per second')
+            }
         }
     }
 
@@ -545,24 +578,12 @@ function create_weather_forecast(weather_prediction_array) {
 const interval1 = create_date_interval(new Date(1997, 10, 22), new Date(2010, 5, 13))
 const weatherData = create_weather_data(interval1, 'Horsens', 'Celsius', '*C', 14)
 const temp = create_temperature(weatherData)
-const tempInF = temp.convertToF();
 console.log(interval1.getDateFrom())
 console.log(weatherData.getUnit())
 console.log(temp.getWeatherData().getValue())
-console.log(tempInF)
 const weatherData1 = create_weather_data(interval1, 'Vejle', 'Milimiters', 'MM', 2000)
-const precip = create_precipitation(weatherData1)
-const precipInInches = precip.convertToInches()
-console.log(precip.getWeatherData().getValue())
-console.log(precipInInches)
-const reports = [weatherData, weatherData1]
-const weatherReport = create_weather_history(reports)
-const report = weatherReport.getWeatherReport()
-const currPlace = weatherReport.getCurrentPlace()
-const currPeriod = weatherReport.getCurrentPeriod()
-const currType = weatherReport.getCurrentType()
-console.log(currPlace)
-console.log(currPeriod.getDateFrom())
-console.log(currType) 
-const usUnit = weatherReport.convertToUSUnits()
-console.log(usUnit)
+console.log(weatherData.getValue())
+console.log(weatherData.getUnit())
+temp.convertToF()
+console.log(weatherData.getValue())
+console.log(weatherData.getUnit())
