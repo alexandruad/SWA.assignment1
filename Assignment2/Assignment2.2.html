@@ -1,0 +1,265 @@
+<html>
+<title>
+    Non-interactive web page that shows weather data and predictions.
+</title>
+
+<body>
+    <div>
+        <h3>FETCH</br> Horsens Minimum temperature for the last 5 days: <b id='FetchHorsensminTempId'></b></h3>
+        <h3>Aarhus Minimum temperature for the last 5 days: <b id='FetchAarhusminTempId'></b></h3>
+        <h3>Copenhagen Minimum temperature for the last 5 days: <b id='FetchCopenhagenminTempId'></b></h3> </br>
+        <h3>XMLRequest </br> Horsens Minimum temperature for the last 5 days: <b id='XMLHorsensminTempId'></b></h3>
+        <h3>Aarhus Minimum temperature for the last 5 days: <b id='XMLAarhusminTempId'></b></h3>
+        <h3>Copenhagen Minimum temperature for the last 5 days: <b id='XMLCopenhagenminTempId'></b></h3> </br>
+
+        <h3>FETCH</br> Horsens Maximum temperature for the last 5 days: <b id='FetchHorsensmaxTempId'></b></h3>
+        <h3>Aarhus Maximum temperature for the last 5 days: <b id='FetchAarhusmaxTempId'></b></h3>
+        <h3>Copenhagen Maximum temperature for the last 5 days: <b id='FetchCopenhagenmaxTempId'></b></h3> </br>
+        <h3>XMLRequest</br> Horsens Maximum temperature for the last 5 days: <b id='XMLHorsensmaxTempId'></b></h3>
+        <h3>Aarhus Maximum temperature for the last 5 days: <b id='XMLAarhusmaxTempId'></b></h3>
+        <h3>Copenhagen Maximum temperature for the last 5 days: <b id='XMLCopenhagenmaxTempId'></b></h3> </br>
+
+        <h3>FETCH</br> Horsens Total precipitation for the last 5 days: <b id='FetchHorsenstotalPrecId'></b></h3>
+        <h3>Aarhus Total precipitation for the last 5 days: <b id='FetchAarhustotalPrecId'></b></h3>
+        <h3>Copenhagen Total precipitation for the last 5 days: <b id='FetchCopenhagentotalPrecId'></b></h3> </br>
+        <h3>XMLRequest</br> Horsens Total precipitation for the last 5 days: <b id='XMLHorsenstotalPrecId'></b></h3>
+        <h3>Aarhus Total precipitation for the last 5 days: <b id='XMLAarhustotalPrecId'></b></h3>
+        <h3>Copenhagen Total precipitation for the last 5 days: <b id='XMLCopenhagentotalPrecId'></b></h3> </br>
+
+        <h3>FETCH</br> Horsens Average wind speed for the last 5 days : <b id='FetchHorsenswindSpeedAverageId'></b></h3>
+        <h3>Aarhus Average wind speed for the last 5 days : <b id='FetchAarhuswindSpeedAverageId'></b></h3>
+        <h3>Copenhagen Average wind speed for the last 5 days : <b id='FetchCopenhagenwindSpeedAverageId'></b></h3>
+        </br>
+        <h3>XMLRequest</br> Horsens Average wind speed for the last 5 days : <b id='XMLHorsenswindSpeedAverageId'></b>
+        </h3>
+        <h3>Aarhus Average wind speed for the last 5 days : <b id='XMLAarhuswindSpeedAverageId'></b></h3>
+        <h3>Copenhagen Average wind speed for the last 5 days : <b id='XMLCopenhagenwindSpeedAverageId'></b></h3> </br>
+
+        <h3>FETCH</br> Horsens Dominant wind direction for the last 5 days : <b
+                id='FetchHorsensdominantWindDirectionId'></b></h3>
+        <h3>Aarhus Dominant wind direction for the last 5 days : <b id='FetchAarhusdominantWindDirectionId'></b></h3>
+        <h3>Copenhagen Dominant wind direction for the last 5 days : <b id='FetchCopenhagendominantWindDirectionId'></b>
+        </h3></br>
+        <h3>XMLRequest</br> Horsens Dominant wind direction for the last 5 days : <b
+                id='XMLHorsensdominantWindDirectionId'></b></h3>
+        <h3>Aarhus Dominant wind direction for the last 5 days : <b id='XMLAarhusdominantWindDirectionId'></b></h3>
+        <h3>Copenhagen Dominant wind direction for the last 5 days : <b id='XMLCopenhagendominantWindDirectionId'></b>
+        </h3></br>
+
+        <h3>FETCH</br> Horsens Average cloud coverage for the last 5 days : <b
+                id='FetchHorsensaverageCloudCoverageId'></b></h3>
+        <h3>Aarhus Average cloud coverage for the last 5 days : <b id='FetchAarhusaverageCloudCoverageId'></b></h3>
+        <h3>Copenhagen Average cloud coverage for the last 5 days : <b id='FetchCopenhagenaverageCloudCoverageId'></b>
+        </h3></br>
+        <h3>XMLRequest</br> Horsens Average cloud coverage for the last 5 days : <b
+                id='XMLHorsensaverageCloudCoverageId'></b></h3>
+        <h3>Aarhus Average cloud coverage for the last 5 days : <b id='XMLAarhusaverageCloudCoverageId'></b></h3>
+        <h3>Copenhagen Average cloud coverage for the last 5 days : <b id='XMLCopenhagenaverageCloudCoverageId'></b>
+        </h3></br>
+
+        <h3>FETCH</br> Horsens Hourly predictions for the next 24 hours. : <div
+                id='FetchHorsenshourlyPredictions24IdallWeatherId'></div>
+        </h3>
+        <h3>Aarhus Hourly predictions for the next 24 hours. : <div id='FetchAarhushourlyPredictions24IdallWeatherId'>
+            </div>
+        </h3>
+        <h3>Copenhagen Hourly predictions for the next 24 hours. : <div
+                id='FetchCopenhagenhourlyPredictions24IdallWeatherId'></div>
+        </h3> </br>
+        <h3>XMLRequest</br> Horsens Hourly predictions for the next 24 hours. : <div
+                id='XMLHorsenshourlyPredictions24IdallWeatherId'></div>
+        </h3>
+        <h3>Aarhus Hourly predictions for the next 24 hours. : <div id='XMLAarhushourlyPredictions24IdallWeatherId'>
+            </div>
+        </h3>
+        <h3>Copenhagen Hourly predictions for the next 24 hours. : <div
+                id='XMLCopenhagenhourlyPredictions24IdallWeatherId'></div>
+        </h3> </br>
+
+        <h3>FETCH</br> Horsens All data for the latest measurement of each kind: <div id='FetchHorsensallWeatherId'>
+            </div>
+        </h3>
+        <h3>Aarhus All data for the latest measurement of each kind: <div id='FetchAarhusallWeatherId'></div>
+        </h3>
+        <h3>Copenhagen All data for the latest measurement of each kind: <div id='FetchCopenhagenallWeatherId'></div>
+        </h3> </br>
+        <h3>XMLRequest</br> Horsens All data for the latest measurement of each kind: <div id='XMLHorsensallWeatherId'>
+            </div>
+        </h3>
+        <h3>Aarhus All data for the latest measurement of each kind: <div id='XMLAarhusallWeatherId'></div>
+        </h3>
+        <h3>Copenhagen All data for the latest measurement of each kind: <div id='XMLCopenhagenallWeatherId'></div>
+        </h3> </br>
+    </div>
+
+</body>
+<script>
+    //ACTION
+    getWeatherAndForecastDataWithFetch('Horsens')
+    getWeatherAndForecastDataWithFetch('Aarhus')
+    getWeatherAndForecastDataWithFetch('Copenhagen')
+
+    getWeatherAndForecastDataWithXMLHttpRequest('Horsens')
+    getWeatherAndForecastDataWithXMLHttpRequest('Aarhus')
+    getWeatherAndForecastDataWithXMLHttpRequest('Copenhagen')
+
+    //DECLARE
+
+    //XmlHttpRequest 
+    function getWeatherAndForecastDataWithXMLHttpRequest(place) {
+        const baseUrlWeatherData = `http://localhost:8080/data/${place}`
+        const baseUrlWeatherForecast = `http://localhost:8080/forecast/${place}`
+        const request = new XMLHttpRequest()
+        request.open('GET', baseUrlWeatherData)
+        request.onload = () => {
+            const data = JSON.parse(request.responseText)
+            bindToHtmlTable(data, place, 'XML')
+            bindToHtmlMaxMinTemp(data, place, 'XML')
+            bindToHtmlTotalPrecipitation(data, place, 'XML')
+            bindToHtmlAverageWindSpeed(data, place, 'XML')
+            bindToHtmlDominantWindDirection(data, place, 'XML')
+            bindToHtmlAverageCloudCoverage(data, place, 'XML')
+            request.open('GET', baseUrlWeatherForecast)
+            request.onload = () => {
+                const data = JSON.parse(request.responseText)
+                bindToHtmlTable(data, place + 'hourlyPredictions24Id', 'XML')
+            }
+            request.send()
+        }
+        request.send()
+    }
+
+    //FETCH
+    function getWeatherAndForecastDataWithFetch(place) {
+        getAllWeatherData(place);
+        getMinMaxTemperature(place)
+        getTotalPrecipitation(place)
+        getAverageWindSpeed(place)
+        getDominantWindDirection(place)
+        getAverageCloudCoverage(place)
+        getAllForecastData(place)
+    }
+
+    //•	All data for the latest measurement of each kind
+    function getAllWeatherData(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlTable(jsonData, place, 'Fetch')
+        })
+    }
+
+    function getWeatherDataWithFetch(place) {
+        const baseUrl = `http://localhost:8080/data/${place}`
+        return fetch(baseUrl)
+            .then(res => res.json())
+            .catch(console.error)
+    }
+
+    function bindToHtmlTable(data, place, requestType) {
+        let txt = ''
+        txt += "<table border='1'>"
+        data.forEach(el => {
+            txt += "<tr> <td> " + JSON.stringify(el)
+                .replace('{', '')
+                .replace('}', '') + " </td> <tr>";
+        });
+        txt += "</table>"
+        document.getElementById(requestType + place + 'allWeatherId').innerHTML = txt
+    }
+
+    // •	Minimum temperature for the last 5 days
+    // •	Maximum temperature for the last 5 days
+    function getMinMaxTemperature(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlMaxMinTemp(jsonData, place, 'Fetch')
+        })
+    }
+
+    function bindToHtmlMaxMinTemp(jsonData, place, requestType) {
+        let temps = jsonData.filter(x => x.type === 'temperature')
+            .map(y => y.value)
+        document.getElementById(requestType + place + 'minTempId').innerHTML = Math.min(...temps)
+        document.getElementById(requestType + place + 'maxTempId').innerHTML = Math.max(...temps)
+    }
+
+    // •	Total precipitation for the last 5 days
+    function getTotalPrecipitation(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlTotalPrecipitation(jsonData, place, 'Fetch')
+        })
+    }
+
+    function bindToHtmlTotalPrecipitation(jsonData, place, requestType) {
+        let totalPrecipitation = jsonData.filter(x => x.type === 'precipitation')
+            .map(y => y.value)
+            .reduce((total, value) => total + value, 0)
+        document.getElementById(requestType + place + 'totalPrecId').innerHTML = totalPrecipitation
+    }
+
+    // •	Average wind speed for the last 5 days
+    function getAverageWindSpeed(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlAverageWindSpeed(jsonData, place, 'Fetch')
+        })
+    }
+
+    function bindToHtmlAverageWindSpeed(jsonData, place, requestType) {
+        let totalWindSpeedArr = jsonData.filter(x => x.type === 'wind speed')
+            .map(y => y.value)
+        const totalWindSpeedValue = totalWindSpeedArr.reduce((sum, value) => sum + value, 0)
+        let averageWindSpeed = totalWindSpeedValue / totalWindSpeedArr.length
+        document.getElementById(requestType + place + 'windSpeedAverageId').innerHTML = averageWindSpeed
+    }
+
+    // •	Dominant wind direction for the last 5 days
+    function getDominantWindDirection(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlDominantWindDirection(jsonData, place, 'Fetch')
+        })
+    }
+
+    function bindToHtmlDominantWindDirection(jsonData, place, requestType) {
+        let occurrences = jsonData.filter(x => x.type === 'wind speed')
+            .map(y => y.direction)
+            .reduce((obj, item) => {
+                obj[item] = (obj[item] || 0) + 1
+                return obj
+            }, {})
+        document.getElementById(requestType + place + 'dominantWindDirectionId').innerHTML = getKeyWithMaxValue(
+            occurrences)
+    }
+
+    function getKeyWithMaxValue(occurrences) {
+        return (Object.keys(occurrences)).reduce((a, b) => occurrences[a] > occurrences[b] ? a : b)
+    }
+
+    // •	Average cloud coverage for the last 5 days
+    function getAverageCloudCoverage(place) {
+        getWeatherDataWithFetch(place).then(jsonData => {
+            bindToHtmlAverageCloudCoverage(jsonData, place, 'Fetch')
+        })
+    }
+
+    function bindToHtmlAverageCloudCoverage(jsonData, place, requestType) {
+        let totalCloudCoverageArr = jsonData.filter(x => x.type === 'cloud coverage')
+            .map(y => y.value)
+        const totalCloudCoverageValue = totalCloudCoverageArr.reduce((sum, value) => sum + value, 0)
+        let averageCloudCoverage = totalCloudCoverageValue / totalCloudCoverageArr.length
+        document.getElementById(requestType + place + 'averageCloudCoverageId').innerHTML = averageCloudCoverage;
+    }
+
+    // •	Hourly predictions for the next 24 hours.
+    function getForecastDataWithFetch(place) {
+        const baseUrl = `http://localhost:8080/forecast/${place}`
+        return fetch(baseUrl)
+            .then(res => res.json())
+            .catch(console.error)
+    }
+
+    function getAllForecastData(place) {
+        getForecastDataWithFetch(place).then(jsonData => {
+            bindToHtmlTable(jsonData, place + 'hourlyPredictions24Id', 'Fetch')
+        })
+    }
+</script>
+
+</html>
