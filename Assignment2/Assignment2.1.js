@@ -607,7 +607,7 @@ console.log(temperature.convertToF().value)
 console.log(temperature.convertToC().value)
 
 
-let precipitation = create_precipitation(new Date(1997, 09, 13), 'Copenhagen', 'Rain', 'MM', 21);
+let precipitation = create_precipitation(new Date(1997, 09, 13), 'Esbjerg', 'Rain', 'MM', 21);
 console.log("Precipitation in MM")
 console.log(precipitation.getValue())
 console.log("Conversion to Inches")
@@ -615,7 +615,7 @@ console.log(precipitation.convertToInches().value)
 
 let wind = create_wind(new Date(1997, 09, 13), 'Aarhus', 'NW', 'MPS', 8);
 
-let temperature_prediction = create_temperature_prediction(new Date(1997, 09, 13), "Horsens", '*C', -5, 6)
+let temperature_prediction = create_temperature_prediction(new Date(1997, 09, 13), "Billund", '*C', -5, 6)
 console.log("Temperature prediction in Celsius")
 console.log(temperature_prediction.getFrom())
 console.log(temperature_prediction.getTo())
@@ -626,7 +626,7 @@ console.log(converted_temperature.to)
 
 
 
-let precipitation_prediction = create_precipitation_prediction(new Date(1997, 09, 13), 'Copenhagen', ['Rain', 'Snow', 'Hail'], 'MM', 43, 53);
+let precipitation_prediction = create_precipitation_prediction(new Date(1997, 09, 13), 'Odense', ['Rain', 'Storm'], 'MM', 43, 53);
 console.log("Precipitation prediction in MM")
 console.log(precipitation_prediction.getFrom())
 console.log(precipitation_prediction.getTo())
@@ -635,7 +635,7 @@ let converted_precipitation = precipitation_prediction.convertToInches()
 console.log(converted_precipitation.from)
 console.log(converted_precipitation.to)
 
-let wind_prediction = create_wind_prediction(new Date(2019, 10, 10), 'Aarhus', ['NW', 'N', 'SW', 'W'], 'MS', 7.4, 7.5);
+let wind_prediction = create_wind_prediction(new Date(1997, 09, 13), 'Aalborg', ['N', 'NW'], 'MPS', 7.4, 7.5);
 
 let historyArray = new Array(temperature, precipitation, wind)
 let weatherHistory = create_weather_history(historyArray)
