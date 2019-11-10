@@ -8,7 +8,7 @@ const PlaceFilter = ({dispatcher}) => [
     </select>
 ]
 
-const ForecastData = ({forecast_data, dispatcher}) => [
+const ForecastData = ({forecast_data}) => [
     <h3>From: <b id = "forecastDatafrom">{forecast_data.from}</b>,
     To: <b id = "forecastDatato">{forecast_data.to}</b>,
     Type: <b id = "forecastDatatype">{forecast_data.type}</b>,
@@ -19,7 +19,7 @@ const ForecastData = ({forecast_data, dispatcher}) => [
     Direction: <b id = "forecastDatadirection">{forecast_data.directions}</b></h3>
   ]
   
-  const WeatherData = ({weather_data, dispatcher}) => [
+  const WeatherData = ({weather_data}) => [
     <h3>Value: <b id = "weather_datavalue">{weather_data.value}</b>,
     Type: <b id = "weather_datatype">{weather_data.type}</b>,
     Unit: <b id = "weather_dataunit">{weather_data.unit}</b>,
@@ -28,39 +28,6 @@ const ForecastData = ({forecast_data, dispatcher}) => [
     Precipitation type: <b id = "weather_dataprec">{weather_data.precipitation_type}</b>,
     Direction: <b id = "weather_datadirection">{weather_data.direction}</b></h3>
   ] 
-  
-  /* function WeatherDataRow(props) {
-    const numbers = props.numbers;
-    const WeatherDataRow1 = (props) => (
-      <tr>
-                {numbers.map((number) =>
-          <WeatherData key={number.toString()}
-                    value={number} 
-                    {...props}/>
-        )}
-      </tr>
-  );
-    return (
-      WeatherDataRow1
-    );
-  } */
-  
-  /* function ForecastDataRow(props) {
-    const numbers1 = props.numbers;
-    const ForecastDataRow1 = (props) => (
-      <tr>
-                {numbers1.map((number) =>
-          <ForecastData key={number.toString()}
-                    value={number} 
-                    {...props}/>
-        )}
-      </tr>
-  );
-    return (
-      ForecastDataRow1
-    );
-  } */
-  
   
   const WeatherDataProp = (props) => (
     <WeatherData {...props}/>
@@ -71,6 +38,8 @@ const ForecastData = ({forecast_data, dispatcher}) => [
   )
   
   const WeatherDataBody = ({model, dispatcher}) => (
+    //Pls man, it doesn't work, flux is awesome but hard to master. 
+    //have mercy 
     model.weatherData().map(weather_data => <WeatherDataProp {...{weather_data, dispatcher}}/>)
   )
   

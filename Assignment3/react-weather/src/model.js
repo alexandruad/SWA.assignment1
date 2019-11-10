@@ -14,9 +14,9 @@ const model = (weatherdata, forecastdata, filter = () => true) => {
         .map(p => ({ ...p, ...weatherdataMap[p.place]}))
         .filter(filter)
   
-
-    const updateWeatherData = p => model(weatherdata.map(pp => p.place === pp.place? p : pp), forecastdata, filter)
-    const updateForecastData = p => model(weatherdata,  forecastdata.map(pp => p.place === pp.place? p : pp), filter)
+    const updateWeather = (data, forecast) => model(data, forecast)
+    const updateWeatherData = p => model(p, forecastdata, filter)
+    const updateForecastData = p => model(weatherdata,  p, filter)
     //const addForecast = e => model( forecastdata.concat(e), filter)
     const addWeatherData = e => model(weatherdata.concat(e), forecastdata)
     const addForecastData = e => model( weatherdata, forecastdata.concat(e))
@@ -53,7 +53,7 @@ const model = (weatherdata, forecastdata, filter = () => true) => {
             })
         }
       }
-    return {displayData, weatherData, updateForecastData, updateWeatherData, addForecastData,forecastData,addWeatherData, filtered, all }
+    return {displayData, weatherData, updateWeather, updateForecastData, updateWeatherData, addForecastData,forecastData,addWeatherData, filtered, all }
 }
 
 export default model

@@ -1,4 +1,5 @@
 //import keyIndex from 'react-key-index'
+import model from './model.js'
 
 export default (init_model, view, renderer) => {
     let model = init_model
@@ -18,11 +19,11 @@ export default (init_model, view, renderer) => {
         //     /* return model.addForecastData(keyIndex(forecast_data,1)).updateForecastData(forecast_data) */
         //     return model.addForecastData(forecast_data).updateForecastData(forecast_data)
         case 'getData':
-            const {place} = action
-            const {weatherData} = action
-            console.log(weatherData)
-            console.log(model.filtered(val => val === place))
-            return model.updateWeatherData(weatherData)
+            const {weatherData, forecastData} = action
+            model = model.updateWeather(weatherData, forecastData)
+
+            
+            return model
         default:
           return model
       }

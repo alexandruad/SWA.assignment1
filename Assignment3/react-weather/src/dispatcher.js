@@ -21,7 +21,8 @@ export default store => async ({type, ...params}) =>  {
       case 'getData':
         const {place} = params
         const weatherData = await fetch('http://localhost:8080/data/' + place).then(res => res.json())
-        store({type, ...params, weatherData/* , forecast_data */})
+        const forecastData = await fetch('http://localhost:8080/forecast/' + place).then(res => res.json())
+        store({type, weatherData, forecastData/* , forecast_data */})
         break;
 
 /*         case 'Aarhus':
