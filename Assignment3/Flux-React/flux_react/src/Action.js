@@ -19,27 +19,30 @@ import axios from 'axios'
       }
       
   export  function reloadView() {
-        let historicalData = []
-        axios.get("http://localhost:8080/data/")
-        .then((data) => 
-        {
-          console.log("got the weather data!", data.data);
-        });
-        Dispatcher.dispatch({type: "FETCH_TODOS"});
-        setTimeout(() => {
-          Dispatcher.dispatch({type: "RECEIVE_TODOS", weatherdata: [
-            {
-              id: 8484848484,
-              text: "Go Shopping Again",
-              complete: false
-            },
-            {
-              id: 6262627272,
-              text: "Hug Wife",
-              complete: true
-            },
-          ]});
-        }, 1000);
+        let historicalData = {}
+        
+        let plsHelp = axios.get("http://localhost:8080/data/")
+        .then(function (result) {
+          historicalData = result.data;
+      });
+        console.log(plsHelp)
+        console.log(historicalData)
+        Dispatcher.dispatch(historicalData)
+        // Dispatcher.dispatch({type: "FETCH_TODOS"});
+        // setTimeout(() => {
+        //   Dispatcher.dispatch({type: "RECEIVE_TODOS", weatherdata: [
+        //     {
+        //       id: 8484848484,
+        //       text: "Go Shopping Again",
+        //       complete: false
+        //     },
+        //     {
+        //       id: 6262627272,
+        //       text: "Hug Wife",
+        //       complete: true
+        //     },
+        //   ]});
+        // }, 1000);
       }
 
 export default reloadView();

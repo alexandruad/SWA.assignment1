@@ -5,7 +5,7 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import model from './model.js'
 import store from './store.js'
-import view from './App.js'
+import view from './view.js'
 import dispatcher from './dispatcher.js'
 
 //ReactDOM.render(<App />, document.getElementById('root'));

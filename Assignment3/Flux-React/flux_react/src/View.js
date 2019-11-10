@@ -27,7 +27,7 @@ export default class View extends React.Component {
     Action.reloadView();
   }
   render() {
-      return (
+      return [
     <div className="View">
       <h1>WeatherData</h1>
       <select multiple>
@@ -125,7 +125,7 @@ export default class View extends React.Component {
         </div>
       </div>
     </div>
-  );
+      ]
   }
 }
 
