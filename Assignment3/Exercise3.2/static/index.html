@@ -1,0 +1,105 @@
+<html ng-app='WeatherApp'>
+
+<head>
+  <title>Weather</title>
+
+  <script type='module'>
+    import "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"
+    import './components.js'
+  </script>
+</head>
+
+<body ng-controller="WeatherController">
+
+    <h3>Choose a city</h3>
+    <select multiple>
+      <option value="Horsens" ng-click='showData("Horsens")'>Horsens</option>
+      <option value="Aarhus" ng-click='showData("Aarhus")'>Aarhus</option>
+      <option value="Copenhagen" ng-click='showData("Copenhagen")'>Copenhagen</option>
+    </select>
+
+    <h3>Choose a time interval</h3>
+    <input type="datetime-local" id="from_date">
+    <input type="datetime-local" id="to_date">
+    <button ng-click='filterInterval()'>Filter</button>
+    
+    <h3>Clear all filters</h3>
+    <button ng-click='showData("")'>Clear</button>
+    <h3>Report historical data</h3>
+    <form id="dataForm">
+      Place: <input type="text" name="city" list="citynames" ng-model="place">
+      <datalist id="citynames">
+        <option value="Horsens"></option>
+        <option value="Aarhus"></option>
+        <option value="Copenhagen"></option>
+      </datalist>
+      Type: <input type="text" name="type" list="typenames" ng-model="type">
+      <datalist id="typenames">
+          <option value="temperature"></option>
+          <option value="precipitation"></option>
+          <option value="wind speed"></option>
+          <option value="cloud coverage"></option>
+      </datalist>
+      Time: <input type="datetime-local" id="historyTime" ng-model="time">
+      <br>
+      <br>
+      Value: <input type="number" min="-10" max="100" ng-model="value">
+      Unit: <input type="text" name="unit" list="unitnames" ng-model="unit">
+      <datalist id="unitnames">
+        <option value="C"></option>
+        <option value="mm"></option>
+        <option value="m/s"></option>
+        <option value="%"></option>
+      </datalist>
+      <br>
+      <br>
+      Precipitation type: <input type="text" name="precipitation" list="precipitationnames" ng-model="precipitation_type">
+      <datalist id="precipitationnames">
+        <option value="rain"></option>
+        <option value="sleet"></option>
+        <option value="hail"></option>
+        <option value="snow"></option>
+      </datalist>
+      Direction: <input type="text" name="direction" list="directionnames" ng-model="direction">
+      <datalist id="directionnames">
+        <option value="North"></option>
+        <option value="Northeast"></option>
+        <option value="East"></option>
+        <option value="Southeast"></option>
+        <option value="South"></option>
+        <option value="Southwest"></option>
+        <option value="West"></option>
+        <option value="Northwest"></option>
+      </datalist>
+    </form>
+    <button type="submit" form="dataForm" value="Submit" ng-click='addHistoricalData()'>Submit</button>
+    <label>Message: </label>
+    <input type="text" readonly ng-model="result">
+
+  <br>
+  <div>
+    <h1>HISTORY DATA</h1>
+    <div ng-repeat="d in data">
+      <h3>Place: <b>{{d.place}}</b>, Type: <b>{{d.type}}</b>, Time: <b>{{d.time}}</b>, Value: <b>{{d.value}}</b>, Unit:
+        <b>{{d.unit}}</b><span ng-if="d.precipitation_type">, Precipitation type:
+          <b>{{d.precipitation_type}}</b></span><span ng-if="d.direction">, Direction: <b>{{d.direction}}</b></span>
+      </h3>
+    </div>
+    <h1>FORECAST DATA</h1>
+    <div ng-repeat="f in forecast">
+      <h3>Place: <b>{{f.place}}</b>
+        , Type: <b>{{f.type}}</b>
+        , Time: <b>{{f.time}}</b>
+        , From: <b>{{f.from}}</b>
+        , To: <b>{{f.to}}</b>
+        , Unit: <b>{{f.unit}}</b>
+        <span ng-if="f.precipitation_types">, Precipitation types:<b>{{f.precipitation_types}}</b></span>
+        <span ng-if="f.directions">, Directions: <b>{{f.directions}}</b></span>
+      </h3>
+    </div>
+  </div>
+
+
+</body>
+
+</html>

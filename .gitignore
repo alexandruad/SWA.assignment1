@@ -1,9 +1,11 @@
 Assignment2/weather_report
-Assignment3/weather_report
+Assignment3/Exercise3.2/weather_report
 node_modules/.bin/eslint
 .eslintrc.js
 Trying stuff.js
 .vscode/launch.json
+node_modules
+package-lock.json
 node_modules/.bin/acorn
 node_modules/.bin/acorn.cmd
 node_modules/.bin/eslint.cmd
