@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Weather warnings</title>
+  </head>
+  <body>
+    <h2>Weather warnings:</h2>
+
+    <h3>Part 1:</h3>
+    <h6 id="part1">
+      • display current warnings when the page load and update them without reloading the page when they are updated on
+      the server.
+    </h6>
+
+    <h3>Part 2:</h3>
+    <h6 id="part2">
+      • display changes in warnings since last update.
+      <div>WARNINGS SINCE LAST UPDATE: <input type="datetime-local" id="myLocalDate"></div>
+    </h6>
+
+    <h3>Part 3:</h3>
+    <h6 id="part3">
+      • allow the user to set a minimal severity level to only display some of the warnings. Don't reload the warnings
+      when the user changes the minimal severity level.
+      <div id ="mainWarnings">MAIN WARNINGS:
+          <select class="bootstrap-select" id="severity">
+              <option value="9" selected="selected">All severities</option>
+              <option value="1">Severity 1</option>
+              <option value="2">Severity 2</option>
+              <option value="3">Severity 3</option>
+              <option value="4">Severity 4</option>
+              <option value="5">Severity 5</option>
+              <option value="6">Severity 6</option>
+        </select>
+      </div>
+    </h6>
+
+    <h3>Part 4:</h3>
+    <h6 id="part4">
+      • allow the user to complete turn off warnings. Do not receive warnings from the server while they are turned off,
+      but reload them when they are turned on again.
+      <div id="onoffWarnings">WARNINGS ON/OFF :
+          <input type="checkbox" id="toggle" checked>
+        </div>
+    </h6>
+
+
+
+
+
+
+
+
+    
+
+    <!-- RXJS -->
+    <script type="module">
+      'use strict';
+      
+        import { timer, from, of, fromEvent } from  'https://dev.jspm.io/rxjs@6/_esm2015';
+        import { ajax } from  'https://dev.jspm.io/rxjs@6/_esm2015/ajax';
+        import { switchMap, catchError, concatMap, map, retry, takeWhile, takeUntil } from 'https://dev.jspm.io/rxjs@6/_esm2015/operators';
+        
+        const warningsUrl = 'http://localhost:8080/warnings'
+        const warningsSinceUrl = 'http://localhost:8080/warnings/since/'
+
+
+        //GET ALL WARNINGS and POLL SERVER
+        const warnings$ = ajax.getJSON(warningsUrl)
+        var polledWarnings$ = timer(0, 500).pipe(concatMap( _ => warnings$))
+        var polledSubscriber = subscribeToPolledWarnings()
+        
+        //GET WARNINGS since time
+        document.getElementById("myLocalDate").defaultValue = "2018-12-03T13:00:00.000";
+        const warningsSinceTime$ = ajax.getJSON(`${warningsSinceUrl}${getFromTime()}`)
+
+        warningsSinceTime$.subscribe(
+           (result) => {
+             let el = document.createElement('p')
+             el.setAttribute("id", "onoff")
+             el.innerText = JSON.stringify(result.warnings)
+             document.getElementById("part2").appendChild(el)
+            },
+            (err) => console.log(`ERROR: ${err}`),
+           () => console.log('done'))
+        
+
+        //TURN WARNINGS ON/OFF
+
+        //TOGGLE BUTTON ONN/OFF to unsubscribe
+        var checked$ = fromEvent(toggle, 'change').pipe(map( e=> e.target.checked))
+        checked$.subscribe(checked => {
+          unSubscribeToPolledWarnings(polledSubscriber)
+          if(checked){
+            polledSubscriber = subscribeToPolledWarnings()
+          }else{
+            unSubscribeToPolledWarnings(polledSubscriber)
+          }
+        })
+
+        
+        //HELPER functions
+       
+        // SUBSCRIBE/UNSUBSCRIBE to warnings
+        function unSubscribeToPolledWarnings(subscriber){
+          return subscriber.unsubscribe()
+        }
+
+        function subscribeToPolledWarnings(){
+          return polledWarnings$.subscribe(
+           (result) => {
+             const filteredwarnings = result.warnings
+                .filter( warning => warning.severity <= getSeverity())
+                .filter( warning => warning.prediction.time >= getFromTime())
+          
+             printTime(JSON.stringify(result.time))
+             printPolledWarningd(JSON.stringify(filteredwarnings))
+            },
+            (err) => console.log(`ERROR: ${err}`),
+           () => console.log('done'))
+        }
+
+
+        // PRINT TO HTML
+        function printTime(time) {
+          var oldHtml = document.getElementById("T1")
+        
+          if (!!oldHtml) {
+            document.getElementById("T1").innerHTML = time
+          } else {
+            let el = document.createElement('p')
+            el.setAttribute("id", "T1")
+            el.innerText = time
+            document.getElementById("part1").appendChild(el)
+        }
+        }
+
+        function printPolledWarningd(val) {
+          var oldHtml = document.getElementById("P1")
+        
+          if (!!oldHtml) {
+            document.getElementById("P1").innerHTML = val
+          } else {
+            let el = document.createElement('p')
+            el.setAttribute("id", "P1")
+            el.innerText = val
+            document.getElementById("part1").appendChild(el)
+          }
+        }
+
+        //GET MINIMAL SEVERITY
+        function getSeverity() {
+          const e = document.getElementById("severity")
+          var severity = e.options[e.selectedIndex].value
+          return severity
+        }
+
+        //GET SINCE LAST UPDATE
+        function getFromTime(){
+          const e = document.getElementById("myLocalDate")
+          var localTime = e.value
+          return localTime
+        }
+               
+    </script>
+
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+
+
+
+
+
