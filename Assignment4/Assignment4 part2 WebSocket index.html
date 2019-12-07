@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <title>Weather warnings</title>
+
+</head>
+
+<body>
+  <h2>Weather warnings:</h2>
+
+  <h3>Part 1:</h3>
+  <h6 id="part1">
+    • display current warnings when the page load and update them without reloading the page when they are updated on
+    the server.
+
+    <div>
+      <table id="warningsTable">
+        <tr>
+          <th>ID</th>
+          <th>Severity</th>
+          <th>From</th>
+          <th>To</th>
+          <th>Type</th>
+          <th>Unit</th>
+          <th>Time</th>
+          <th>Place</th>
+          <th>Precipitation Type</th>
+          <th>Wind Direction</th>
+        </tr>
+      </table>
+    </div>
+  </h6>
+
+  <h3>Part 2:</h3>
+  <h6 id="part2">
+    • display changes in warnings since last update.
+    <div>WARNINGS SINCE LAST UPDATE: <input type="datetime-local" id="myLocalDate">
+      <button onclick="getWarningsSince()">Get warnings since</button>
+    </div>
+
+  </h6>
+
+  <h3>Part 3:</h3>
+  <h6 id="part3">
+    • allow the user to set a minimal severity level to only display some of the warnings. Don't reload the warnings
+    when the user changes the minimal severity level.
+    <div id="mainWarnings">MAIN WARNINGS:
+      <select class="bootstrap-select" id="severity" onchange="changeSeverity()">
+        <option value="7" selected="selected">All severities</option>
+        <option value="1">Severity 1</option>
+        <option value="2">Severity 2</option>
+        <option value="3">Severity 3</option>
+        <option value="4">Severity 4</option>
+        <option value="5">Severity 5</option>
+        <option value="6">Severity 6</option>
+      </select>
+    </div>
+  </h6>
+
+  <h3>Part 4:</h3>
+  <h6 id="part4">
+    • allow the user to complete turn off warnings. Do not receive warnings from the server while they are turned off,
+    but reload them when they are turned on again.
+    <div id="onoffWarnings">WARNINGS ON/OFF :
+      <input type="checkbox" id="toggle" onclick="onCheckboxClick()" checked>
+    </div>
+  </h6>
+
+  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
+  <script>
+    'use strict'
+
+    let ws = new WebSocket("ws://localhost:8090/warnings")
+    const warningsSinceUrl = 'http://localhost:8080/warnings/since/'
+    var warningData = [];
+    var warningsSince = [];
+
+
+    //UNSUBSCRIBE to warnings
+    window.unSubscribeToWarnings = () => {
+      if (ws.OPEN) {
+        const message = JSON.stringify("unsubscribe")
+        console.log("bye senor")
+        ws.send("unsubscribe")
+      }
+    }
+
+    //SUBSCRIBE TO WEBSOCKET
+    window.subscribeToWarnings = () => {
+      if (ws.CLOSED) {
+        ws = new WebSocket("ws://localhost:8090/warnings")
+      }
+      ws.onopen = () => {
+        console.log("Hello senor")
+        ws.send("subscribe");
+      }
+      ws.onmessage = message => {
+        const warns = JSON.parse(message.data)
+        console.log("Que tal?")
+        printToTable(warns)
+      }
+    }
+
+    //GET WARNINGS SINCE TIME
+    document.getElementById("myLocalDate").defaultValue = "2018-12-03T13:00:00.000";
+    function getWarningsSince() {
+      if (document.getElementById("onoff") != null) {
+        var p = document.getElementById("onoff")
+        p.remove();
+      }
+      $.get(warningsSinceUrl + getFromTime(), (data) => {
+        warningsSince = data;
+        let el = document.createElement('p')
+        el.setAttribute("id", "onoff")
+        el.innerText = JSON.stringify(data.warnings)
+        document.getElementById("part2").appendChild(el)
+      })
+    }
+
+    //TOGGLE BUTTON ONN/OFF to unsubscribe
+    function onCheckboxClick() {
+      var checked = document.getElementById("toggle").checked
+      if (checked) {
+        subscribeToWarnings()
+      }
+      else {
+        unSubscribeToWarnings();
+      }
+    }
+
+    //ON CHANGE FOR SEVERITY
+    function changeSeverity() {
+      var severity = getSeverity()
+      if (severity === "7") {
+        subscribeToWarnings()
+      }
+      else {
+        unSubscribeToWarnings()
+        var warningsTable = document.getElementById("warningsTable")
+        while (warningsTable.childNodes.length != 2) {
+          warningsTable.removeChild(warningsTable.childNodes[2])
+        }
+        console.log(warningsTable.childNodes)
+
+        for (let i = 0; i < warningData.length - 1; i++) {
+          if (warningData[i].prediction != null && warningData[i].severity == severity) {
+            console.log(warningData[i].severity)
+            console.log(severity)
+            var tr = document.createElement('tr');
+            tr.setAttribute("id", warningData[i].id);
+
+            tr.innerHTML =
+              '<td>' + warningData[i].id + '</td>' +
+              '<td>' + warningData[i].severity + '</td>' +
+              '<td>' + warningData[i].prediction.from + '</td>' +
+              '<td>' + warningData[i].prediction.to + '</td>' +
+              '<td>' + warningData[i].prediction.type + '</td>' +
+              '<td>' + warningData[i].prediction.unit + '</td>' +
+              '<td>' + warningData[i].prediction.time + '</td>' +
+              '<td>' + warningData[i].prediction.place + '</td>' +
+              '<td>' + warningData[i].prediction.precipitation_types + '</td>' +
+              '<td>' + warningData[i].prediction.directions + '</td>';
+
+            document.getElementById("warningsTable").appendChild(tr);
+          }
+        }
+      }
+    }
+
+    //PRINT THE TABLE
+    function printToTable(warns) {
+      if (warns.time != null) {
+        for (let warn of warns.warnings) {
+          printWarnings(warn);
+        }
+      }
+      else {
+        printWarnings(warns);
+      }
+    }
+    //PRINT TO HTML
+    function printWarnings(warns) {
+      var table = document.getElementById("warningsTable");
+      if (warns != null) {
+        warningData.push(warns)
+        var id = document.getElementById(warns.id)
+        if (id != null)
+          id.remove();
+
+        var tr = document.createElement('tr');
+        tr.setAttribute("id", warns.id)
+
+        if (warns.prediction != null) {
+          tr.innerHTML =
+            '<td>' + warns.id + '</td>' +
+            '<td>' + warns.severity + '</td>' +
+            '<td>' + warns.prediction.from + '</td>' +
+            '<td>' + warns.prediction.to + '</td>' +
+            '<td>' + warns.prediction.type + '</td>' +
+            '<td>' + warns.prediction.unit + '</td>' +
+            '<td>' + warns.prediction.time + '</td>' +
+            '<td>' + warns.prediction.place + '</td>' +
+            '<td>' + warns.prediction.precipitation_types + '</td>' +
+            '<td>' + warns.prediction.directions + '</td>';
+
+          document.getElementById("warningsTable").appendChild(tr);
+
+        }
+      }
+    }
+
+
+    //GET MINIMAL SEVERITY
+    function getSeverity() {
+      const e = document.getElementById("severity")
+      var severity = e.options[e.selectedIndex].value
+      return severity
+    }
+
+    //GET SINCE LAST UPDATE
+    function getFromTime() {
+      const e = document.getElementById("myLocalDate")
+      var localTime = e.value
+      return localTime
+    }
+
+    window.onload = subscribeToWarnings;
+  </script>
+</body>
+
+</html>
