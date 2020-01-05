@@ -1,18 +1,20 @@
+<!--identifier for an angularjs app-->
 <html ng-app='WeatherApp'>
 
 <head>
   <title>Weather</title>
-
+  <!--import the angularjs library and components.js-->
   <script type='module'>
     import "https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"
     import './components.js'
   </script>
 </head>
-
+<!--reference the module.controller('WeatherController') from the components-->
 <body ng-controller="WeatherController">
 
     <h3>Choose a city</h3>
     <select multiple>
+      <!--on button click execute showData method, see components.js-->
       <option value="Horsens" ng-click='showData("Horsens")'>Horsens</option>
       <option value="Aarhus" ng-click='showData("Aarhus")'>Aarhus</option>
       <option value="Copenhagen" ng-click='showData("Copenhagen")'>Copenhagen</option>
@@ -21,11 +23,16 @@
     <h3>Choose a time interval</h3>
     <input type="datetime-local" id="from_date">
     <input type="datetime-local" id="to_date">
+    <!--on button click execute filterInterval method, see component.js-->
     <button ng-click='filterInterval()'>Filter</button>
     
     <h3>Clear all filters</h3>
+    <!--on button click display data for all cities-->
     <button ng-click='showData("")'>Clear</button>
     <h3>Report historical data</h3>
+    <!--form created to fill data so a post request can be submitted to the server
+    ng-model is used to bind the value in the select to the same on in the $scope using two way data binding
+    -->
     <form id="dataForm">
       Place: <input type="text" name="city" list="citynames" ng-model="place">
       <datalist id="citynames">
@@ -78,13 +85,18 @@
 
   <br>
   <div>
+    <!--ng-if is an if statement that displays the data only if it exists-->
     <h1>HISTORY DATA</h1>
+    <!--the data available in the $scope is bound to the one in d for each elements of the data array and can be referenced with {{ var }}-->
+    <!--ng-repeat acts as a for loop going through all the weather data and displaying relevant fields-->
     <div ng-repeat="d in data">
       <h3>Place: <b>{{d.place}}</b>, Type: <b>{{d.type}}</b>, Time: <b>{{d.time}}</b>, Value: <b>{{d.value}}</b>, Unit:
         <b>{{d.unit}}</b><span ng-if="d.precipitation_type">, Precipitation type:
           <b>{{d.precipitation_type}}</b></span><span ng-if="d.direction">, Direction: <b>{{d.direction}}</b></span>
       </h3>
     </div>
+    <!--the forecast available in the $scope is bound to the one in f for each elements of the forecast array and can be referenced with {{ var }}-->
+    <!--ng-repeat acts as a for loop going through all the forecast data and displaying relevant fields-->
     <h1>FORECAST DATA</h1>
     <div ng-repeat="f in forecast">
       <h3>Place: <b>{{f.place}}</b>

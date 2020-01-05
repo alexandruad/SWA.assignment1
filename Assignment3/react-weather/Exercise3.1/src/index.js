@@ -1,14 +1,14 @@
-//import React from 'react';
+
 import ReactDOM from 'react-dom';
 import './index.css';
-//import App from './App';
-import * as serviceWorker from './serviceWorker';
-import model from './model.js'
-import store from './store.js'
-import view from './view.js'
-import dispatcher from './dispatcher.js'
 
-//ReactDOM.render(<App />, document.getElementById('root'));
+import * as serviceWorker from './serviceWorker';
+import model from './model'
+import store from './store'
+import view from './view'
+import dispatcher from './dispatcher'
+
+
 
 async function init() {
     try {
@@ -22,7 +22,6 @@ async function init() {
         const theStore = store(theModel, theView, renderer)
         theDispatcher = dispatcher(theStore)
         renderer(theView(theModel))
-        //console.log(weatherdata)
     } catch (err) {
         console.log(err)
     }
